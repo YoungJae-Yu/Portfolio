@@ -1,34 +1,57 @@
 ## :pushpin: Projects
-### 1. [goQuality](https://github.com/Integerous/goQuality)
->고퀄리티 개발 컨텐츠 공유 서비스 (개인 프로젝트)  
->개발 기간: 2019.2.18 ~ 2019.4.5  
->  
->기술 스택:  
->Java 8 / Spring Boot / Gradle / Spring Data JPA / QueryDSL  
->H2 / MySQL / Spring Security / Jsoup / Vue.js / Element U  
->  
->[프로젝트 상세 설명](https://github.com/Integerous/goQuality) 참고
+### 1. [잔잔]()
+[개요] 
+<br>
+'잔잔'은 전통주와 그에 어울리는 안주를 한 번에 제공하는 웹 기반 서비스입니다. <br>
+전통적인 술과 안주의 매력을 재발견하고, 집에서도 편하게 즐길 수 있는 경험을 제공합니다. <br>
+
+[목적] 
+<br>
+현대 사회에서 바쁜 일상으로 인해 외부에서 음식을 즐기기 힘든 사람들을 대상으로, 술집의 분위기와 맛을 그대로 재현하여 제공합니다. <br>
+애주가들에게 다양한 전통주와 안주의 조합을 집에서도 즐길 수 있게 해, 더 넓은 고객층에게 전통주의 매력을 알립니다. <br>
+
+[개발 환경] 
+<br>
+Language : Java 17 / JavaScript / HTML 5 / CSS 3 <br>
+Framework : Spring / Ajax / jQuery <br>
+Tool : Eclipse / ERD / DBeaver / SVN <br>
+Database : Oracle 11 <br>
+Server : Apache Tomcat 10 <br>
+
+[주요 기능]
+<br>
+제품주문: 사용자는 다양한 종류의 전통주와 안주를 선택하여 주문할 수 있습니다. <br>
+구독 서비스: 원하는 제품을 정기적으로 받을 수 있는 구독 서비스를 제공하여, 사용자의 편의성을 높입니다. <br>
+회원 관리: 사용자의 가입, 탈퇴, 정보 수정 등의 회원 관련 기능을 제공합니다. 또한, 사용자의 구독 상태, 주문 내역 등을 확인할 수 있습니다. <br>
+관리자 기능: 전체 사용자 관리, 제품의 추가/삭제/수정, 주문 상태 관리 등의 관리자 전용 기능을 통해 웹사이트의 효율적인 운영을 지원합니다. <br>
 
 ---
 
-### 2. [두 번째 프로젝트]()
->두 번째 프로젝트 간략 소개  (팀 프로젝트)  
->개발 기간: 2020.7.18 ~ 2020.11.5  
->  
->기술 스택:  
->Java 8 / Spring Boot / Gradle / Spring Data JPA / QueryDSL  
->H2 / MySQL / Spring Security / Jsoup / Vue.js / Element U  
->  
->[프로젝트 상세 설명](https://github.com/Integerous/goQuality) 참고
+### 2. [밀림]()
+[개요]
+<br>
+"밀림"은 애니메이션 구독 서비스와 "밀림의 숲"이라는 커뮤니티를 통해, <br>
+사용자들이 콘텐츠를 시청하면서 동시에 소통할 수 있는 애니메이션 OTT 플랫폼입니다. <br>
+사용자가 애니메이션을 즐기면서 다른 애니메이션 애호가들과 의견을 공유하고 소통할 수 있는 공간을 제공합니다. <br>
 
----
+[목적]
+<br>
+애니메이션 콘텐츠의 다양성과 품질 향상을 추구하며, 사용자 간의 소통을 통해 더 풍부하고 깊은 애니메이션 시청 경험을 제공한다. <br>
+OTT 시장에서 차별화된 서비스를 제공하여 사용자의 만족도를 높이고 브랜드 인지도를 강화한다. <br>
 
-### 3. [세 번째 프로젝트]()
->세 번째 프로젝트 간략 소개  (개인 프로젝트)  
->개발 기간: 2018.1.18 ~ 2018.4.5  
->  
->기술 스택:  
->Java 8 / Spring Boot / Gradle / Spring Data JPA / QueryDSL  
->H2 / MySQL / Spring Security / Jsoup / Vue.js / Element U  
->  
->[프로젝트 상세 설명](https://github.com/Integerous/goQuality) 참고
+[개발 환경]
+<br>
+Language : Java 17 / JavaScript / HTML 5 / CSS 3 <br>
+Framework : Spring / Ajax / jQuery / Vue / Mybatis <br>
+Tool : Eclipse / ERD / DBeaver / SVN <br>
+Database : Oracle 11 <br>
+Server : Apache Tomcat 9 <br>
+API : SMS api <br>
+
+[주요기능]
+<br>
+영상 서비스: 다양한 장르의 애니메이션 콘텐츠 제공 <br>
+자유 게시판: 애니메이션에 대한 리뷰, 의견, 토론을 위한 공간 제공, 사용자 간의 소통을 위한 다양한 기능 (댓글, 좋아요, 등) <br>
+회원 관리: 회원 가입, 로그인, 회원 정보 수정 및 탈퇴 <br>
+멤버십: 다양한 멤버십 플랜 및 구독 서비스 제공 <br>
+관리자 페이지: 전체 회원 및 콘텐츠 관리, 사용자 피드백 및 게시물 관리 <br>
