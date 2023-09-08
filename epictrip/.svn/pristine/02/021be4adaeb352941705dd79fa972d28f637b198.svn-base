@@ -1,0 +1,32 @@
+package com.web.epictrip.controller;
+
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.web.epictrip.service.Mypage_Service;
+import com.web.epictrip.vo.Level_Vo;
+
+@Controller
+public class Mypage_Controller {
+
+	@Autowired
+	private Mypage_Service service;
+	
+	
+	@RequestMapping("Mypage_mymain")
+	public String Mypage_level(@Param("userid")String userid,Model d) {
+		int cnt = service.Mypage_level(userid);
+		
+		Level_Vo level = new Level_Vo();
+		level.CountLevel(cnt);
+		
+		String leverName = level.getImgName();
+		
+		d.addAttribute("levelImg", leverName); // 레벨이름
+		d.addAttribute("levelCnt", cnt); // 좋아요갯수
+		return "Mypage_mymain";
+	}
+}

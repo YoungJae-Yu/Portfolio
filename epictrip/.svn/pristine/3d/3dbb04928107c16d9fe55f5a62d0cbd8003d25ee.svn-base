@@ -1,0 +1,38 @@
+package com.web.epictrip.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.web.epictrip.dao.Store_Dao;
+import com.web.epictrip.vo.Product;
+import com.web.epictrip.vo.Product_List;
+import com.web.epictrip.vo.Product_Page;
+
+@Service
+public class Store_Service {
+
+	@Autowired
+	private Store_Dao dao;
+	
+	public int Store_Prod_Insert(Product ins) {
+		return dao.Store_Prod_Insert(ins);
+	}
+	
+	// 상품 페이징
+	public int Store_Prod_Main_Cnt(Product_Page pg) {
+    	return dao.Store_Prod_Main_Cnt(pg);
+    }
+
+	// 상품 상품 페이징 후
+	public List<Product_List> Store_Prod_Main_List(Product_Page pg) {
+    	return dao.Store_Prod_Main_List(pg);
+    }
+	
+	
+	
+}
+
+
+

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+<mapper namespace="com.web.epictrip.dao.Login_Dao">
+
+	<!-- 로그인 -->
+	<select id="loginCheck" resultType="int" parameterType="user">
+		SELECT COUNT(*) FROM USERINFO WHERE userid = #{userid} AND pass = #{pass}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="insertUser" parameterType="user">
+	    INSERT INTO userInfo VALUES (#{userid}, #{pass}, #{name}, #{phnumber}, #{gender}, #{birth}, #{email}, 100, 'img01', 'user', sysdate)
+	</insert>
+	
+	<!-- 아이디 확인 -->
+	<select id="checkUserId" parameterType="user">
+		SELECT COUNT(*) FROM USERINFO WHERE userid = #{userid}
+	</select>
+</mapper>
+
+
+
+	

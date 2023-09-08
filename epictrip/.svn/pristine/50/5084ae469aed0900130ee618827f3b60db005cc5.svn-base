@@ -1,0 +1,125 @@
+package com.web.epictrip.vo;
+
+import java.util.Date;
+
+public class Company {
+    private String cpkey;
+    private String userid;
+    private String image;
+    private String cptitle;
+    private String cpcontent;
+    private String cploc;
+    private int cpnum; // 모집인원
+    private int hits;
+    private Date startdate;
+    private Date enddate;
+    private Date creatdate;
+
+    // Constructors
+    public Company() {
+    }
+
+    public Company(String cpkey, String userid, String image, String cptitle, String cpcontent, String cploc, int cpnum, int hits, Date startdate, Date enddate, Date creatdate) {
+        this.cpkey = cpkey;
+        this.userid = userid;
+        this.image = image;
+        this.cptitle = cptitle;
+        this.cpcontent = cpcontent;
+        this.cploc = cploc;
+        this.cpnum = cpnum;
+        this.hits = hits;
+        this.startdate = startdate;
+        this.enddate = enddate;
+        this.creatdate = creatdate;
+    }
+
+    // Getters and Setters
+    public String getCpkey() {
+        return cpkey;
+    }
+
+    public void setCpkey(String cpkey) {
+        this.cpkey = cpkey;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getCptitle() {
+        return cptitle;
+    }
+
+    public void setCptitle(String cptitle) {
+        this.cptitle = cptitle;
+    }
+
+    public String getCpcontent() {
+        return cpcontent;
+    }
+
+    public void setCpcontent(String cpcontent) {
+        this.cpcontent = cpcontent;
+    }
+
+    public String getCploc() {
+        return cploc;
+    }
+
+    public void setCploc(String cploc) {
+        this.cploc = cploc;
+    }
+
+    public int getCpnum() {
+        return cpnum;
+    }
+
+    public void setCpnum(int cpnum) {
+        this.cpnum = cpnum;
+    }
+
+    public int getHits() {
+        return hits;
+    }
+
+    public void setHits(int hits) {
+        this.hits = hits;
+    }
+
+    public Date getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
+    }
+
+    public Date getEnddate() {
+        return enddate;
+    }
+
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
+    }
+
+    public Date getCreatdate() {
+        return creatdate;
+    }
+
+    public void setCreatdate(Date creatdate) {
+        this.creatdate = creatdate;
+    }
+}
+

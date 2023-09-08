@@ -1,0 +1,29 @@
+package com.web.epictrip.vo;
+
+public class ChatMessageDTO {
+    private String content;
+    private String senderId;
+    private String senderName;
+	public ChatMessageDTO() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getSenderId() {
+		return senderId;
+	}
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+	public String getSenderName() {
+		return senderName;
+	}
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+}

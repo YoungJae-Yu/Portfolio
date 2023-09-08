@@ -1,0 +1,13 @@
+package com.web.epictrip.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class Main_controller {
+
+	@RequestMapping("EpicTripe")
+	public String Main() {
+		return "main";
+	}
+}

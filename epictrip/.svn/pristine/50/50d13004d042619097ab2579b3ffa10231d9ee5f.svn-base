@@ -1,0 +1,21 @@
+package com.web.epictrip.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.web.epictrip.vo.Company;
+
+
+@Mapper
+public interface Company_dao {
+    public List<Company> cpList(Map<String, String> params);
+    public int insertCompany(Company company);
+    public Company getCompanyDetails(int cpkey);
+    public int updateCompany(Company company);
+    public int deleteCompany(int cpkey, String userid);
+    
+    public void increaseHits(int cpkey); // 조회수 증가 메서드
+    
+}

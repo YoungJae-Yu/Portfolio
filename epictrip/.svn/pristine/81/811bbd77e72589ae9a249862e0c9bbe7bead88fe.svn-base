@@ -1,0 +1,253 @@
+	<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8" import="java.util.*"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+	<c:set var="path" value="${pageContext.request.contextPath }" />
+	<fmt:requestEncoding value="utf-8" />
+
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Final project : EpicTrip">
+    <meta property="og:url" content="https://mrrobotcorp.github.io/project6_EpicTrip/">
+    <meta property="og:image" content="https://mrrobotcorp.github.io/project6_EpicTrip//source/thumbnail.png">
+    <meta property="og:description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Final project : EpicTrip">
+    <meta name="twitter:url" content="https://mrrobotcorp.github.io/project6_EpicTrip/">
+    <meta name="twitter:image" content="https://mrrobotcorp.github.io/project6_EpicTrip//source/thumbnail.png">
+    <meta name="twitter:description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name="description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name='keywords' content='project, EpicTrip, toy project, community, trip, tour'>
+
+    <link rel="icon" href="./source/favicon-32x32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="./source/apple-icon-180x180.png" sizes="180x180">
+    <title>EpicTrip | 에픽트립</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <link href="./css/headFoot.css" rel="stylesheet">
+    <link href="./css/sList.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="./main.html"><img class="headLogo" src="./source/logo.png"></a>
+            <div class="gnb">
+                <ul class="gnbTab">
+                    <li>
+                        <a href="./Store.html" class="store">여행상점</a>
+                    </li>
+                    <li>
+                        <a href="./Community_Group.html" class="community">커뮤니티</a>
+                    </li>
+                </ul>
+                <div class="userHead">
+                    <a href="#"><img class="msgImg" src="./source/msg.png"></a>
+                    <a href="#"><img class="userImg" src="./source/profImg2.jpg"></a>
+                    <ul class="userList">
+                        <li>유저 닉네임</li>
+                        <li><a href="./Community_Group.html">마이페이지</a></li>
+                        <li><a href="./adm_calendar.html">관리자 일정</a></li>
+                        <li>로그아웃</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section>
+        <div class="sListThumb" >
+            <img src="" alt="" >
+            <h1></h1>
+        </div>
+        <div class="line"></div>
+        <div class="frmLine">
+            <div>
+                <div class="strFrm">
+                    <input type="text" name="schBox" placeholder="여행지를 검색해보세요">
+                    <button type="button" id="titleBtn"></button>
+                </div>
+                <input type="checkbox" class="sortBtn" id="sort" value="">
+                <label for="sort">조회순</label>
+            </div>
+            <a href="Store_Posting" class="postBtn">상품 작성하기</a>
+        </div>
+
+        <div class="itemAll">
+        
+        <c:forEach var="prod" items="${product_List}">
+            <a href="./Store_Detail?prodkey=${prod.prodkey}" class="itemOne item01">
+                <div class="post">
+                    <div class="postImg">
+                        <img src="./source/storeImg/${prod.titleimage}" alt="">
+                    </div>
+                </div>
+                <div class="postBottom">
+                    <span id="infoText" class="infoText">${prod.prodtitle}</span>
+                    <span id="locPay" class="locPay">
+                        <p id="loc">${prod.prodloc}</p>
+                        <span id="price">
+                        	<fmt:formatNumber value="${prod.price}"/> 원
+                        </span>
+                    </span>
+                </div>
+                <input type="hidden" value="${prod.prodkey}">
+                <input type="hidden" value="${prod.country}">
+                <input type="hidden" value="${prod.hits}">
+                <input type="hidden" value="${prod.updtdate}">
+            </a>
+        </c:forEach>
+            
+            
+        </div>
+        
+		<div class="pagination">
+			<c:if test="${pagination.prev}">
+           		<button type="button" class="prevBtn arrow"
+           		onClick="fn_prev('${pagination.currPageNo}', '${pagination.range}', '${pagination.pageSize}')">
+           		</button>
+    		</c:if>
+           
+           <c:forEach begin="${pagination.startPage}" end="${pagination.endPage}" var="idx">
+	           		<button type="button" value="${idx}" class="pageNum" <c:out value="${pagination.currPageNo == idx ? 'active' : ''}"/> 
+	           		onClick="fn_pagination('${idx}', '${pagination.range}')">${idx}</button>
+	        </c:forEach>
+	        
+	        <c:if test="${pagination.next}">
+           		<button type="button" class="nextBtn arrow"
+           		onClick="fn_next('${pagination.currPageNo}', '${pagination.range}', '${pagination.pageSize}')" >
+           		</button>
+          	</c:if>
+       </div> 
+       
+       <%-- 
+       <div>
+		<nav aria-label="Page navigation example" style="margin: auto;">
+			<ul class="pagination justify-content-center">
+				<c:if test="${pagination.prev}">
+					<li class="page-item"><a class="page-link" href="#" 
+					onClick="fn_prev('${pagination.currPageNo}', '${pagination.range}', '${pagination.pageSize}')">이전</a></li>
+				</c:if>
+				<c:forEach begin="${pagination.startPage}" end="${pagination.endPage}" var="idx">
+					<li class="page-item <c:out value="${pagination.currPageNo == idx ? 'active' : ''}"/> "><a class="page-link" href="#" onClick="fn_pagination('${idx}', '${pagination.range}')"> ${idx} </a></li>
+				</c:forEach>
+				<c:if test="${pagination.next}">
+					<li class="page-item"><a class="page-link" href="#" onClick="fn_next('${pagination.currPageNo}', '${pagination.range}', '${pagination.pageSize}')" >다음</a></li>
+				</c:if>
+			</ul>
+		</nav>
+	</div>
+	 --%>
+	
+    </section>
+    <footer>
+    	<p>${paraMap.keyword}</p>
+        <img src="./source/logo_white.png">
+        <p><a href="mailto:depo89055@gmail.com">프로젝트 문의 dddd@gmail.com</a></p>
+        <p>유선 상담 010-1234-1234</p>
+        <p>Copyright© EpicTrip, Inc. 2023. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="./js/header.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+</body>
+<script type="text/javascript">
+var searchType = ""; 
+var asd1 = "${paraMap.country}"; 
+var asd2 = "${paraMap.searchType}"; 
+var asd3 = "${paraMap.keyword}"; 
+console.log("${paraMap}")
+console.log(asd1)
+console.log(asd2)
+console.log(asd3)
+
+
+$(document).ready(function() {
+	
+	// 페이지 이미지 + 이름 변경
+    var country1 = "${pagination.country}";
+    console.log(country1)
+     $(".sListThumb img").attr("src", "./source/countryImg/"+country1+".jpg");
+     $(".sListThumb h1").text(country1);
+    
+    
+	// 페이지 컬러
+    var color = ${pagination.currPageNo};
+    $(".pagination .pageNum").each(function() {
+        if ($(this).val() === color.toString()) {
+            $(this).addClass("active");
+        }
+    });
+
+	  
+	// 제목 검색 
+	$("#titleBtn").click(function(currPageNo, range, pageSize){
+
+		var url = "Store_List?country=일본";
+		url = url + "&currPageNo=" + 1;
+		url = url + "&range=" + 1;
+		url = url + "&searchType=" + searchType;
+		url = url + "&keyword=" + $("[name=schBox]").val();
+		location.href = url;
+	})
+	
+	// 메인 이미지누러서 초기화
+	$(".sListThumb").click(function (){
+		location.href = "Store_List?country=일본";
+	})
+	
+	
+})
+
+//이전 버튼
+function fn_prev(currPageNo, range, pageSize) {
+
+	var currPageNo = (range - 1) * pageSize;
+	var range = range -1;
+
+	var url = "Store_List?country=일본";
+	url = url + "&currPageNo=" + currPageNo;
+	url = url + "&range=" + range;
+	url = url + "&searchType=" + searchType;
+	url = url + "&keyword=" + $("[name=schBox]").val();
+	location.href = url;
+
+}
+
+//페이지 번호 클릭
+function fn_pagination(currPageNo, range) {
+	//$(this).addClass("highlight");
+	var url = "Store_List?country=일본";
+	url = url + "&currPageNo=" + currPageNo;
+	url = url + "&range=" + range;
+	url = url + "&searchType=" + searchType;
+	url = url + "&keyword=" + $("[name=schBox]").val();
+	location.href = url;	
+
+}
+//다음 버튼 이벤트
+function fn_next(currPageNo, range, pageSize) {
+
+	var currPageNo = (range * pageSize) + 1;
+	var range = parseInt(range) + 1;	
+
+	var url = "Store_List?country=일본";
+	url = url + "&currPageNo=" + currPageNo;
+	url = url + "&range=" + range;
+	url = url + "&searchType=" + searchType;
+	url = url + "&keyword=" + $("[name=schBox]").val();
+	location.href = url;
+}
+
+</script>
+
+</html>

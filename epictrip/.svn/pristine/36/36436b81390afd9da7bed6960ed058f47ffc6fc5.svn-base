@@ -1,0 +1,90 @@
+section { min-height: calc(100vh - 240px); }
+.logJoinWrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logInner{
+    display: flex;
+    flex-direction: column;
+    width: 307px;
+}
+.logInner h1{
+    text-align: center;
+    font-family: pSemi;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+.logInput{
+    display: flex;
+    flex-direction: column;
+}
+.logInput input{
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border: solid 1px var(--color-line);
+    border-radius: 3px;
+    font-family: pLight;
+}
+.logInput input:focus{
+    border: solid 2px var(--color-main);
+}
+.checkbox{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.checkbox span {
+    position: relative;
+    display: block;
+    padding-left: 10px;
+    box-sizing: border-box;
+    font-family: pLight;
+    color: #9a9a9a;
+}
+input[type="checkbox"]{
+    display: none;
+}
+input[type="checkbox"]+label{
+    display: inline-block;
+    content: '';
+    width: 15px;
+    height: 15px;
+    border: solid 1px var(--color-line);
+    position: relative;
+    border-radius: 3px;
+}
+input[id="saveId"]:checked+label::after{
+    content: '✓';
+    color: var(--color-main);
+    border: solid 1px var(--color-main);
+    border-radius: 3px;
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    position: absolute;
+    left: -1px;
+    top: -1px;
+}
+.logBtn{
+    padding: 16px 20px;
+    margin-top:20px;
+    margin-bottom:20px;
+    background-color: var(--color-main);
+    border: none;
+    border-radius: 3px;
+    font-family: pSemi;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+} 
+.findJion{
+    display: flex;
+    justify-content: space-between;
+    font-family: pLight;
+    cursor: pointer;
+}
+.find{
+    color: rgb(103, 103, 103);
+}

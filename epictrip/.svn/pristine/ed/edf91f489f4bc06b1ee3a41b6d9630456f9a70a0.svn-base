@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+<mapper namespace="com.web.epictrip.dao.Company_dao">
+	<!-- 동행 리스트 출력-->
+	<!-- 제목검색, 최신순, 조회순 정렬 동적 쿼리-->
+    <select id="cpList" resultType="company">
+        SELECT * FROM COMPANY c, USERINFO u 
+        WHERE c.USERID = u.USERID 
+        AND CPTITLE LIKE '%' || #{cptitle} || '%'
+        <choose>
+			<when test="orderType == 'hits'">
+			    ORDER BY <!--  &lt; 이스케이프 -->
+			    CASE WHEN c.enddate &lt; SYSDATE THEN 1 ELSE 0 END,
+			    c.hits DESC,
+			    c.creatdate DESC
+			</when>
+            <otherwise>
+                ORDER BY 
+                CASE WHEN c.enddate &lt; SYSDATE THEN 1 ELSE 0 END,
+                c.creatdate DESC
+            </otherwise>
+        </choose>
+    </select>
+    <insert id="insertCompany" parameterType="company">
+        INSERT INTO COMPANY values(company_sq.nextval,#{userid},#{cpimage},
+        #{cptitle},#{cpcontent},#{cploc},#{cpnum},0,0,#{startdate},#{enddate},sysdate)
+    </insert>
+    <!-- 동행 상세 출력 -->
+    <select id="getCompanyDetails" resultType="company" parameterType="int">
+	    SELECT *
+	    FROM COMPANY c, USERINFO u 
+	    WHERE c.USERID = u.USERID 
+	    AND CPKEY = #{cpkey}
+	</select>
+	
+    <!-- 동행 상세 수정 -->
+	<update id="updateCompany" parameterType="company">
+	    UPDATE COMPANY 
+	    SET 
+	        CPLOC = #{cploc},
+	        CPNUM = #{cpnum},
+	        STARTDATE = #{startdate},
+	        ENDDATE = #{enddate},
+	        CPIMAGE = #{cpimage},
+	        CPTITLE = #{cptitle},
+	        CPCONTENT = #{cpcontent}
+	    WHERE CPKEY = #{cpkey}
+	    AND USERID = #{userid}
+	</update>
+	
+    <!-- 동행 상세 삭제 -->
+	<delete id="deleteCompany" parameterType="map">
+	    DELETE FROM COMPANY 
+	    WHERE CPKEY = #{cpkey}
+	    AND USERID = #{userid}
+	</delete>
+	<!-- 조회수 증가 -->
+    <update id="increaseHits">
+	    UPDATE COMPANY
+	    SET hits = hits + 1
+	    WHERE cpkey = #{cpkey}
+	</update>
+    
+	<!-- 동행 리스트 페이징 처리를 위한 개수 -->
+	<select id="Company_Main_Cnt" resultType="int" parameterType="companypage">
+	    select count(*)
+	    from company c, userinfo u
+	    where c.userid = u.userid
+	    <choose>			        
+	        <!-- keyword가 ""이 아닐 때 -->
+	        <when test="keyword neq ''"> 
+	            and cptitle like '%'|| lower(#{keyword}) ||'%'
+	        </when>
+	        <!-- 기본 조건은 없음 (정렬만 아래에서 처리) -->
+	    </choose>
+	</select>
+	
+	<!-- 동행 리스트 페이징 처리 후 출력 -->
+	<select id="Company_Main_List" resultType="company" parameterType="companypage">
+	    select *
+	    from(
+	        select rownum as rnum, 
+	        cpkey, cptitle, cpcontent, hits, creatdate
+	        from
+	        (
+	            select *
+	            from company c, userinfo u
+	            where c.userid = u.userid
+	            <choose>			        
+	                <!-- keyword에 ""이 아닐 때 -->
+	                <when test="keyword neq ''"> 
+	                    and cptitle like '%'|| lower(#{keyword}) ||'%'
+	                </when>
+	                <!-- 기본 조건은 없음 -->
+	            </choose>
+	            <!-- 정렬 조건 추가 -->
+	            <choose>
+	                <when test="orderType == 'hits'">
+	                    order by 
+	                    case when c.enddate &lt; sysdate then 1 else 0 end,
+	                    c.hits desc,
+	                    c.creatdate desc
+	                </when>
+	                <otherwise>
+	                    order by 
+	                    case when c.enddate &lt; sysdate then 1 else 0 end,
+	                    c.creatdate desc
+	                </otherwise>
+	            </choose>
+	        ) t
+	        where rownum <![CDATA[<=]]> #{startList} + #{sizePerPage}
+	    )
+	    where rnum <![CDATA[>=]]> #{startList}
+	</select>
+
+    
+    
+</mapper>
+
+
+
+	

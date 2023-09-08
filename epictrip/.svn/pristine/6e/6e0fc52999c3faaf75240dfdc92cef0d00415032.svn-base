@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+	
+	
+	
+<mapper namespace="com.web.epictrip.dao.Schedule_dao">
+
+	<!-- 상세화면 -->
+	<select id="schedule_Dt" resultType="scheduledt" parameterType="string">
+		SELECT
+		    p.schedule_key,
+		    u.name,
+		    TO_CHAR(p.startdate+pp.day_num-1,'yyyy-mm-dd') AS daydate,
+		    pp.day_num,
+		    pl.name AS place_name,
+		    pl.lat,
+		    pl.lng,
+		    pl.loc,
+		    pp.Schedule_Place_key
+		FROM
+		    Schedule p
+		JOIN
+		    UserInfo u ON p.userid = u.userid
+		JOIN
+		    Schedule_Place pp ON p.schedule_key = pp.schedule_key
+		JOIN
+		    Place pl ON pp.place_key = pl.place_key
+		WHERE
+		    p.schedule_key = #{schedule_key}
+		ORDER BY
+			day_num
+	</select>
+	
+	<!-- 상세보기 -->
+	<select id="schedule_Dt02" resultType="Schedulesel" parameterType="string">
+		SELECT p.schedule_key ,u.name , p.userid,p.loc,
+		TO_CHAR(p.startdate,'yyyy-mm-dd') AS startdate,TO_CHAR(p.enddate,'yyyy-mm-dd') AS enddate,p.hits 
+		FROM Schedule p 
+		JOIN userinfo u ON u.USERid = p.USERid
+		WHERE p.schedule_key = #{schedule_key}
+	</select>
+
+	<!-- 조회수 업 -->
+	<update id="scheduleUpHits" parameterType="string">
+		UPDATE Schedule 
+		SET hits = hits + 1
+		WHERE schedule_key = #{schedule_key}
+	</update>
+
+	<!-- 작성화면 지역보기 -->
+	<select id="placeInfo" resultType="place" parameterType="place">
+		SELECT * FROM place WHERE loc = #{loc} and name LIKE '%'||#{name}||'%'
+	</select>
+
+	<!-- 스케쥴 인서트 -->
+	<insert id="scheduleIns01" parameterType="scheduleins01">
+	    <!-- 시퀀스 값을 생성하여 스케쥴 키를 얻기 위해 selectKey 사용 -->
+	    <selectKey keyProperty="schedule_key" resultType="java.lang.String" order="BEFORE">
+	        SELECT 'shl_' || Schedule_seq.nextval FROM dual
+	    </selectKey>
+	    INSERT INTO schedule
+	    VALUES (#{schedule_key}, #{userid}, sysdate, #{loc}, #{startdate}, #{enddate}, 0)
+	</insert>
+	
+	<!-- 스케쥴_플레이스 인서트 -->
+	<insert id="scheduleIns02" parameterType="scheduleins02">
+	    INSERT INTO schedule_place (schedule_key, place_key, daynum, schedule_place_key)
+	    VALUES (#{schedule_key}, #{place_key}, #{daynum}, sp_seq.nextval)
+	</insert>
+
+
+</mapper>
+
+

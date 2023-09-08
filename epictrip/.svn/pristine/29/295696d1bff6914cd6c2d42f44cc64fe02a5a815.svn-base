@@ -1,0 +1,490 @@
+// JavaScript 코드 예시
+const memChatButton = document.getElementById('memChat');
+const adminChatButton = document.getElementById('adminChat');
+
+// URL에서 현재 페이지의 파일명을 추출하는 함수
+function getCurrentPageFileName() {
+  const urlParts = window.location.href.split('/');
+  return urlParts[urlParts.length - 1];
+}
+
+const currentPageFileName = getCurrentPageFileName();
+
+if (currentPageFileName === 'message') {
+  memChatButton.classList.add('selected');
+}
+
+if (currentPageFileName === 'message_userAdChat') {
+  adminChatButton.classList.add('selected');
+}
+
+const messageTextarea = document.getElementById('messageTextarea');
+const sendButton = document.getElementById('sendButton');
+
+messageTextarea.addEventListener('input', function() {
+    if (messageTextarea.value.trim() !== '') {
+        sendButton.classList.add('send');
+    } else {
+        sendButton.classList.remove('send');
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  var roomTitles = document.querySelectorAll(".roomtitle p");
+
+  roomTitles.forEach(function(roomTitle) {
+      if (roomTitle.textContent.length > 18) {
+          var originalText = roomTitle.textContent;
+          roomTitle.textContent = originalText.slice(0, 18) + "···";
+      }
+  });
+});
+
+// 말 줄임...
+document.addEventListener("DOMContentLoaded", function() {
+  var chatroomName = document.querySelectorAll(".chatroomname p");
+
+  chatroomName.forEach(function(chatroomName) {
+      if (chatroomName.textContent.length > 50) {
+          var originalText = chatroomName.textContent;
+          chatroomName.textContent = originalText.slice(0, 50) + "···";
+      }
+  });
+});
+
+// 동행 확정, 취소 토글 버튼
+const groupToggleButtons = document.querySelectorAll('.groupToggle');
+const grouponTexts = document.querySelectorAll('.groupon');
+
+groupToggleButtons.forEach((button, index) => {
+  button.addEventListener('click', () => {
+    if (button.classList.contains('cancel')) {
+      button.textContent = '확정';
+      button.classList.remove('cancel');
+      grouponTexts[index].innerText = '';
+    } else {
+      button.textContent = '취소';
+      button.classList.add('cancel');
+      grouponTexts[index].innerText = '동행 확정';
+    }
+  });
+});
+
+// 동행 확정 모달 열기, 닫기
+function openSelm(){
+  var selmModal = document.querySelector(".selmModal");
+  selmModal.style.display = "block";
+}
+
+function closeSelm(){
+  var selmModal = document.querySelector(".selmModal");
+  selmModal.style.display = "none";
+}
+
+// =============== 모달 js ==================
+// ms모달 열기,닫기
+function memMpclose(){
+  var memMpModal = document.querySelector(".memMpModal");
+  memMpModal.style.display = "none";
+}
+function memMpopen(){
+  var memMpModal = document.querySelector(".memMpModal");
+  memMpModal.style.display = "flex";
+}
+// 
+// .goodMem 버튼 클릭 시 토글 동작
+function recogood() {
+  var goodButton = document.querySelector('.goodMem');
+  goodButton.classList.toggle('choice');
+}
+
+// .badMem 버튼 클릭 시 토글 동작
+function recobad() {
+  var badButton = document.querySelector('.badMem');
+  badButton.classList.toggle('choiceB');
+}
+//-----------
+// 채팅 스크롤 하단 이동
+function scrollToBottom() {
+    let messageArea = document.getElementById('messageArea');
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
+
+//----------------------------------------------------------------------------------
+// 채팅 기능
+let socket = new SockJS('/ws');
+let stompClient = Stomp.over(socket);
+
+stompClient.connect({}, function(frame) {
+    console.log('Connected: ' + frame);
+    
+    // 로컬 스토리지에서 'joinedChat' 항목을 확인
+    let hasJoined = localStorage.getItem('joinedChat');
+
+    // 'joinedChat' 항목이 없으면, 사용자가 채팅방에 처음 입장한 것으로 판단
+    if (!hasJoined) {
+        // 접속 알림 메시지 전송
+        let chatNotification = {
+            type: 'JOIN',
+            senderId: document.body.getAttribute('data-userid'),
+            senderName: document.body.getAttribute('data-name')
+        };
+        stompClient.send("/app/notify", {}, JSON.stringify(chatNotification));
+
+        // 'joinedChat' 항목을 로컬 스토리지에 저장
+        localStorage.setItem('joinedChat', 'true');
+    }
+
+	// 메시지 수신 및 접속자 알림
+	stompClient.subscribe('/topic/messages', function(message) {
+	    let receivedMessage = JSON.parse(message.body);
+	    console.log("Received message:", receivedMessage);
+	    if (receivedMessage.type) {
+	        if (receivedMessage.type === 'JOIN') {
+	            displayNotification(receivedMessage.content);
+	        } else if (receivedMessage.type === 'LEAVE') {
+	            displayNotification(receivedMessage.content);
+	            removeUser(receivedMessage.senderId);  // 사용자 제거 함수 호출
+	        }
+	    } else {
+	        displayMessage(receivedMessage.senderId, receivedMessage.senderName, receivedMessage.content, receivedMessage.senderImage);
+	    }
+	});
+
+	// 사용자 제거 함수
+	function removeUser(userId) {
+	    let userElement = document.getElementById('user-' + userId);
+	    if (userElement) {
+	        userElement.remove();
+	    }
+	}
+	function displayNotification(message) {
+	    let messageArea = document.getElementById('messageArea');
+	    messageArea.innerHTML += `<li class="ment"><p class="mentp">${message}</p></li>`;
+		scrollToBottom();
+	}
+	// 사용자 목록을 받는 subscription 추가
+    stompClient.subscribe('/topic/users', function(users) {
+		console.log("Subscribing to /topic/users...");
+
+        console.log('Received users:', users);
+        displayUsers(JSON.parse(users.body));
+    }, function(error) {
+	    console.error('Subscription Error:', error);
+	});
+    document.getElementById('exitButton').addEventListener('click', function() {
+	    // 사용자에게 채팅방을 나가겠냐고 확인을 구함
+	    let isConfirmed = window.confirm("채팅방을 나가시겠습니까?");
+	
+	    // 사용자가 '확인'을 선택했을 때만 나가기 로직 실행
+	    if (isConfirmed) {
+	        let chatNotification = {
+	            type: 'LEAVE',
+	            senderId: document.body.getAttribute('data-userid'),
+	            senderName: document.body.getAttribute('data-name')
+	        };
+	
+	        stompClient.send("/app/notify", {}, JSON.stringify(chatNotification));
+			localStorage.removeItem('joinedChat');
+	
+	        // 페이지 새로고침
+	        window.location.reload();
+	    }
+    });
+    console.log('Subscribed to /topic/users and requesting user list.');
+    stompClient.send("/app/getUsers", {});
+    
+}, function(error) {
+    console.error('WebSocket Connection Error:', error);
+});
+
+function sendMessage() {
+    let messageInput = document.getElementById('messageTextarea');
+    let message = messageInput.value;
+    if (message.trim() !== '') {
+        let chatMessage = {
+            content: message,
+            senderId: document.body.getAttribute('data-userid'),
+            senderName: document.body.getAttribute('data-name')
+            // ... 필요한 다른 정보도 여기에 추가 ...
+        };
+        stompClient.send("/app/send", {}, JSON.stringify(chatMessage));
+        messageInput.value = '';  // 입력 필드 초기화
+    }
+}
+
+
+
+
+// 사용자 목록을 화면에 표시하는 함수
+function displayUsers(users) {
+	console.log("displayUsers called:", users);
+    let memberArea = document.getElementById('memberArea');
+
+    users.forEach(user => {
+        // '나'는 제외
+        if (user.userid === document.body.getAttribute('data-userid')) return;
+
+        // 이미 추가된 사용자인지 확인
+        if (document.getElementById('user-' + user.userid)) return;  // 이미 화면에 추가된 사용자라면 추가하지 않고 return
+
+        let image = user.image || 'defaultImage.jpg';
+        let name = user.name || 'Unknown';
+
+        memberArea.innerHTML += `
+            <div class="member" id="user-${user.userid}">
+                <div class="memberModalBtn" onclick="memMpopen()">
+                    <img src="./source/${image}.jpg" alt="">
+                </div>
+                <span>${name}</span>
+                <p class="groupon"></p>
+            </div>`;
+    });
+}
+
+
+
+
+
+
+/*
+function sendMessage() {
+    let messageInput = document.getElementById('messageTextarea');
+    let message = messageInput.value;
+    if (message.trim() !== '') {
+        // AJAX를 사용하여 서버에 메시지 전송
+        fetch('/sendChatMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content: message })
+        }).then(response => {
+            if (response.ok) {
+                // 메시지 전송 성공
+                displayMessage(message); // 추가된 부분
+                messageInput.value = '';  // 입력 필드 초기화
+            }
+        });
+    }
+}
+*/
+
+function displayMessage(senderId, senderName, message, senderImage) {
+    let loggedInUserId = document.body.getAttribute('data-userid'); 
+    let loggedInUserName = document.body.getAttribute('data-name'); 
+    let messageArea = document.getElementById('messageArea');
+    let currentDate = new Date();
+    let time = currentDate.getHours() + ':' + currentDate.getMinutes();
+    if (senderId === loggedInUserId) {
+        // 로그인한 사용자의 메시지
+        messageArea.innerHTML += `
+            <li class="mychat">
+                <div class="mychatBlank"></div>
+                <div class="mychatTime">
+                    <p class="sendDate">${time}</p>
+                </div>
+                <div class="chatCom">
+                    <p class="mychatInner">
+                        <span>${message}</span>
+                    </p>
+                </div>
+            </li>`;
+    } else {
+        // 다른 사용자의 메시지
+        messageArea.innerHTML += `
+            <li class="ansarea">
+                <div class="ansprof">
+                    <img src="./source/${senderImage}.jpg" alt="">
+                </div>
+                <div class="chatCom">
+                    <p>${senderName}</p>
+                    <p class="ansInner">${message}</p>
+                </div>
+                <p class="sendDate">${time}</p>
+            </li>`;
+    }
+    scrollToBottom();
+}
+// 채팅방 입장 시 시간 표시
+function checkAndDisplayConnectionTime() {
+    let currentDate = new Date();
+    let storedDateStr = localStorage.getItem('lastConnectionDate');
+    
+    // 현재 날짜를 "2023-08-09" 형식으로 변환
+    let formattedCurrentDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+
+        // 마지막 접속 날짜가 오늘과 다르면 시간 표시
+        displayConnectionTime(currentDate);
+        
+        // 마지막 접속 날짜를 오늘로 업데이트
+        localStorage.setItem('lastConnectionDate', formattedCurrentDate);
+    if (storedDateStr !== formattedCurrentDate) {
+    }
+}
+
+function displayConnectionTime(date) {
+    let hours = String(date.getHours()).padStart(2, '0');
+    let minutes = String(date.getMinutes()).padStart(2, '0');
+    let message = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${hours}시 ${minutes}분`;
+    
+    messageArea.innerHTML += `<li class="ment"><p class="mentp">${message}</p></li>`;
+    console.log(message);
+}
+
+// 채팅방에 접속할 때마다 함수 실행
+checkAndDisplayConnectionTime();
+
+// 채팅방 메시지 로딩
+function loadChatRoomMessages(roomId) {
+    fetch(`/room/${roomId}/messages`)
+    .then(response => response.json())
+    .then(messages => {
+        messages.forEach(message => {
+            displayMessage(message.senderId, message.senderName, message.content, message.senderImage);
+        });
+    })
+    .catch(error => {
+        console.error("Error loading chatroom messages:", error);
+    });
+}
+
+// 동행 확정
+function confirmGroupon(roomId, userId, participantId) {
+    fetch(`/room/${roomId}/confirm?userId=${userId}&participantId=${participantId}`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to confirm groupon');
+        }
+        // 확정 로직 후 처리 (예: UI 변경)...
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+// 동행 확정 취소
+function cancelGroupon(roomId, userId, participantId) {
+    fetch(`/room/${roomId}/cancel?userId=${userId}&participantId=${participantId}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to cancel groupon');
+        }
+        // 취소 로직 후 처리 (예: UI 변경)...
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+// 채팅 메시지 전송
+function saveMessage(chatMessage) {
+    fetch('/sendChatMessage', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(chatMessage)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to save chat message');
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+}
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const postOwnerId = urlParams.get('postOwnerId');
+
+    // 채팅방 존재 여부 확인
+    $.get(`/rooms?userId=${loggedInUserId}`, function(chatRooms) {
+        // 현재 로그인한 사용자와 게시글 작성자 사이의 채팅방이 있는지 확인
+        const chatRoom = chatRooms.find(function(room) {
+            return room.participants.includes(postOwnerId);
+        });
+
+        if (chatRoom) {
+            // 채팅방이 있으면 메시지 로드
+            $.get(`/room/${chatRoom.id}/messages`, function(messages) {
+                // 메시지를 화면에 표시하는 로직을 여기에 추가하시면 됩니다.
+                // 예: displayMessages(messages);
+            });
+        } else {
+            // 채팅방이 없으면 채팅방 생성
+            $.post('/room', [loggedInUserId, postOwnerId], function(createdChatRoom) {
+                // 새로운 채팅방이 생성된 후의 로직 (필요하면)
+            });
+        }
+    });
+};
+
+// openAI api 인공지능 챗봇
+document.getElementById('sendButton').addEventListener('click', function() {
+    // 메시지 텍스트 영역에서 질문 가져오기
+    const question = document.getElementById('messageTextarea').value;
+
+    // 서버에 질문 전송
+    fetch('/ask', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ question: question })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // 응답 받기
+        const answer = data.answer; // 서버에서 'answer'라는 key로 응답이 오는 것을 가정
+
+        // 질문과 응답을 채팅 UI에 표시
+        displayChat(question, answer);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+function displayChat(question, answer) {
+    const chatInner = document.querySelector('.chatInner ul');
+
+    // 사용자 질문 표시
+    const userChatItem = document.createElement('li');
+    userChatItem.className = 'mychat';
+    userChatItem.innerHTML = `
+        <div class="mychatBlank"></div>
+        <div class="mychatTime">
+            <p class="sendDate">오후 5:30</p> <!-- 현재 시간으로 변경 필요 -->
+        </div>
+        <div class=".chatCom">
+            <p class="mychatInner">
+                <span>${question}</span>
+            </p>
+        </div>
+    `;
+    chatInner.appendChild(userChatItem);
+
+    // GPT 응답 표시
+    const gptChatItem = document.createElement('li');
+    gptChatItem.className = 'ansarea';
+    gptChatItem.innerHTML = `
+        <div class="ansprof">
+            <img src="./source/cAdmin.png" alt="">
+        </div>
+        <div class=".chatCom">
+            <p>에픽트립</p>
+            <p class="ansInner">
+                <span>${answer}</span>
+            </p>
+        </div>
+        <p class="sendDate">오후 5:31</p> <!-- 현재 시간으로 변경 필요 -->
+    `;
+    chatInner.appendChild(gptChatItem);
+}
+

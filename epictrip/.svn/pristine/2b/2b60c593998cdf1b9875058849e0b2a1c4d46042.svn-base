@@ -1,0 +1,298 @@
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-- CREATE 문 ----------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+CREATE TABLE userinfo (
+	userid	VARCHAR(255)	NOT NULL PRIMARY KEY,
+	pass	VARCHAR(255)	NULL,
+	name	VARCHAR(255)	NULL,
+	mobilenumber	VARCHAR(255)	NULL,
+	gender	VARCHAR(255)	NULL,
+	birth	DATE NULL,
+	email	VARCHAR(255)	NULL,
+	point	number	NULL,
+	image	VARCHAR(255)	NULL,
+	auth	VARCHAR(255)	NULL,
+	joindate	Date	NULL
+);
+
+CREATE TABLE PlaysInfo (
+	plays VARCHAR(255),
+	lat VARCHAR(255),
+	lng VARCHAR(255),
+	loc VARCHAR(255),
+	playskey VARCHAR2(255)
+);
+ALTER TABLE playsInfo
+ADD playskey VARCHAR2(255);
+SELECT * FROM PlaysInfo;
+DROP TABLE PlaysInfo;
+CREATE SEQUENCE playsInfo_seq
+  START WITH 1
+  INCREMENT BY 1
+  NOCACHE
+  NOCYCLE;
+SELECT plays, COUNT(*) AS duplicate_count
+FROM playsInfo
+GROUP BY plays
+HAVING COUNT(*) > 1;
+INSERT INTO playsInfo (infokey, plays, lat, lng, loc) VALUES ('pl'||playsInfo_seq.nextval,'무로란', 42.3151792, 140.9737666, '일본');
+ 
+
+CREATE TABLE Recommendation (
+	reckey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	recuser	VARCHAR(255)	NULL,
+	PRIMARY KEY (reckey, userid),
+	FOREIGN KEY (userid) REFERENCES userinfo (userid)
+);
+
+CREATE TABLE Wishlist (
+	wlkey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	prodkey	VARCHAR(255)	NOT NULL,
+	wldate	date	NULL,
+	PRIMARY KEY (wlkey, userid, prodkey),
+	FOREIGN KEY (userid) REFERENCES userinfo (userid),
+	FOREIGN KEY (prodkey) REFERENCES product (prodkey)
+);
+
+CREATE TABLE Schedule (
+	skey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	creatdate	date	NULL,
+	PRIMARY KEY (skey, userid),
+	FOREIGN KEY (userid) REFERENCES userinfo (userid)
+);
+
+CREATE TABLE company (
+	cpkey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	image	VARCHAR(255)	NULL,
+	cptitle	VARCHAR(255)	NULL,
+	cpcontent	VARCHAR(3000)	NULL,
+	cploc	VARCHAR(255)	NULL,
+	cpnum	number	NULL, --모집인원
+	currentnum NUMBER DEFAULT 0, --현재인원
+	hits	number	DEFAULT 0, --조회수
+	startdate	date	NULL,
+	enddate	date	NULL,
+	creatdate	date	NULL,
+	PRIMARY KEY (cpkey, userid),
+	FOREIGN KEY (userid) REFERENCES userinfo (userid)
+);
+CREATE TABLE product (
+	prodkey	VARCHAR(255)	NOT NULL PRIMARY KEY,
+	prodloc	VARCHAR(255)	NULL,
+	dcday	double	NULL,
+	dcprice	double	NULL,
+	price	number	NULL,
+	prodtitle	VARCHAR(255)	NULL,
+	prodcontent	VARCHAR(3000)	NULL,
+	image	VARCHAR(255)	NULL,
+	hits	number	NULL,
+	startdate	date	NULL,
+	enddate	date	NULL,
+	creatdate	date	NULL
+);
+
+CREATE TABLE Payment (
+	paykey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	prodkey	VARCHAR(255)	NOT NULL,
+	savedmoney	number	NULL,
+	paydate	date	NULL,
+	paystatus	VARCHAR(255)	NULL,
+	PRIMARY KEY (paykey, userid, prodkey),
+	FOREIGN KEY (userid) REFERENCES userinfo (userid),
+	FOREIGN KEY (prodkey) REFERENCES product (prodkey)
+);
+
+CREATE TABLE Prodcomment (
+	commentkey	VARCHAR(255)	NOT NULL,
+	prodkey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	Uppernumber	VARCHAR(255)	NULL,
+	comment	VARCHAR(255)	NULL,
+	uploaddate	date	NULL,
+	updatedate	date	NULL,
+	PRIMARY KEY (commentkey, prodkey, userid),
+	FOREIGN KEY (prodkey) REFERENCES product (prodkey),
+	FOREIGN KEY (userid) REFERENCES userinfo (userid)
+);
+
+CREATE TABLE Detailschedule (
+	dskey	VARCHAR(255)	NOT NULL,
+	skey2	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	PRIMARY KEY (dskey, skey2, userid),
+	FOREIGN KEY (skey2, userid) REFERENCES Schedule (skey, userid)
+);
+
+CREATE TABLE Message (
+	Messagekey	VARCHAR(255)	NOT NULL,
+	cpkey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	reuserid	VARCHAR(255)	NULL,
+	msgcontent	VARCHAR(3000)	NULL,
+	sendtime	timestamp	NULL,
+	PRIMARY KEY (Messagekey, cpkey, userid),
+	FOREIGN KEY (cpkey, userid) REFERENCES company (cpkey, userid)
+);
+
+CREATE TABLE mySchedule (
+	mskey	VARCHAR(255)	NOT NULL,
+	skey2	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	msdate	date	NULL,
+	PRIMARY KEY (mskey, skey2, userid),
+	FOREIGN KEY (skey2, userid) REFERENCES Schedule (skey, userid)
+);
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-- CREATE 문 ----------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+DROP TABLE Message;
+DROP TABLE mySchedule;
+DROP TABLE Detailschedule;
+DROP TABLE Prodcomment;
+DROP TABLE Payment;
+DROP TABLE product;
+DROP TABLE company;
+DROP TABLE Schedule;
+DROP TABLE Wishlist;
+DROP TABLE Recommendation;
+DROP TABLE userinfo;
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-- DROP 문 ----------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+
+
+
+CREATE TABLE UserInfo (
+   userid VARCHAR(255) NOT NULL,
+   pass VARCHAR(255) NULL,
+   name VARCHAR(255) NULL,
+   phnumber VARCHAR(255) NULL,
+   gender VARCHAR(255) NULL,
+   birth Date NULL,
+   email VARCHAR(255) NULL,
+   point number NULL,
+   image VARCHAR(255) NULL,
+   auth VARCHAR(255) NULL,
+   joindate Date NULL
+);
+DROP TABLE UserInfo;
+ALTER TABLE UserInfo ADD CONSTRAINT PK_UNTITLED PRIMARY KEY (
+   userid
+);
+SELECT * FROM UserInfo;
+INSERT INTO userInfo values('asdads', '0000', '윤석민', '123123', '남', '20230112', 'dasd@naver.com', 100, 'img01', 'user', sysdate)
+
+-- 로그인
+SELECT COUNT(*) FROM USERINFO WHERE userid = 'heoyoun38' AND pass = '0000';
+
+-- 회원가입
+INSERT INTO userInfo values('heoyoun38','0000','윤석민','01033293090','남','19980309','min030900@naver.com',9999,'img01','admin',sysdate);
+INSERT INTO userInfo values('gPdnjs123','0000','신혜원','0103333333','여',TO_DATE ('19980309','YYYY-MM-DD'),'gPdnjs123@naver.com',9999,'img01','admin',sysdate);
+
+-- 아이디 확인
+SELECT COUNT(*) FROM USERINFO WHERE userid = 'heoyoun38';
+/*
+회원 DB
+- 아이디
+- 비밀번호
+- 이름
+- 전화번호
+- 성별
+- 생년 월일
+- 이메일
+- 휴대폰 번호
+- 포인트
+-  이미지
+- 권한
+- 생성 날짜
+
+*/
+
+-- 동행 리스트 출력
+/*
+<select id="selectPosts" resultType="YourResultType">
+    SELECT * FROM COMPANY c, USERINFO u 
+    WHERE c.USERID = u.USERID 
+    AND CPTITLE LIKE '%' || #{cpTitle} || '%'
+    <choose>
+        <!-- 조회순 정렬 버튼이 클릭되었을 때 -->
+        <when test="orderBy == 'hits'">
+            ORDER BY 
+            CASE WHEN c.enddate < SYSDATE THEN 1 ELSE 0 END,
+            c.hits DESC,
+            c.creatdate DESC
+        </when>
+        <!-- 기본 정렬 (최신순) -->
+        <otherwise>
+            ORDER BY c.creatdate DESC
+        </otherwise>
+    </choose>
+</select>
+ */
+    SELECT * FROM COMPANY c, USERINFO u 
+    WHERE c.USERID = u.USERID 
+    AND CPTITLE LIKE '%' ||''|| '%'
+    -- 조회순 정렬
+	ORDER BY 
+	CASE WHEN c.enddate < SYSDATE THEN 1 ELSE 0 END,
+	c.hits DESC,
+	c.creatdate DESC;
+	-- 최신순 정렬(기본값)
+	ORDER BY 
+ 	CASE WHEN c.enddate < SYSDATE THEN 1 ELSE 0 END,
+	c.creatdate DESC;
+------
+SELECT * FROM COMPANY c ;
+SELECT * FROM COMPANY c ,USERINFO u 
+WHERE c.USERID = u.USERID 
+AND CPTITLE LIKE '%'||'괌'||'%'
+ORDER BY CREATDATE DESC
+;
+SELECT * FROM COMPANY c 
+WHERE ENDDATE-SYSDATE>0 
+ORDER BY HITS DESC
+;
+DELETE FROM COMPANY
+WHERE CPKEY = 3;
+INSERT INTO COMPANY c values(company_sq.nextval,'dudwo123','image1','괌 같이 가실분 괌~','괌으로 떠납니다!!','괌',4,0,0,'2023-07-15','2023-07-19',sysdate);
+
+CREATE SEQUENCE company_sq
+  START WITH 1
+  INCREMENT BY 1
+  NOMAXVALUE;
+
+CREATE TABLE company (
+	cpkey	VARCHAR(255)	NOT NULL,
+	userid	VARCHAR(255)	NOT NULL,
+	image	VARCHAR(255)	NULL,
+	cptitle	VARCHAR(255)	NULL,
+	cpcontent	VARCHAR(3000)	NULL,
+	cploc	VARCHAR(255)	NULL,
+	cpnum	number	NULL, --모집인원
+	currentnum NUMBER DEFAULT 0, --현재인원
+	hits	number	DEFAULT 0, --조회수
+	startdate	date	NULL,
+	enddate	date	NULL,
+	creatdate	date	NULL
+);
+
+
+SELECT USERID
+FROM USERINFO u
+WHERE NAME = '유영재'
+AND PHNUMBER ='01052917433';
+SELECT PASS
+FROM USERINFO u
+WHERE USERID  = 'dudwo123'
+AND PHNUMBER ='01052917433';

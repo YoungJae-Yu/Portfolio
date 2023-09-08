@@ -1,0 +1,51 @@
+package com.web.epictrip.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.web.epictrip.service.Company_service;
+import com.web.epictrip.vo.Company;
+
+@Controller
+public class Company_controller {
+
+    @Autowired
+    private Company_service companyService;
+    
+    // http://localhost:4040/companyMain
+    // 동행 페이지 메인
+    @GetMapping("/companyMain")
+    public String companyMain() {
+        return "companyMain";
+    }
+    // http://localhost:4040/companyDetail
+    // 동행 상세 페이지
+    @GetMapping("/companyDetail")
+    public String companyDetail() {
+    	return "companyDetail";
+    }
+    // http://localhost:4040/companies
+    @GetMapping("/companies")
+    @ResponseBody
+    public List<Company> getCompanies(@RequestParam(defaultValue="") String cptitle, @RequestParam(required=false, defaultValue="default") String orderType) {
+        return companyService.getCompanyList(cptitle, orderType);
+    }
+}
+/*
+아이디``
+나이(20대)``
+성별``
+여행기간(시작날짜~끝날짜)`
+지역`
+이미지`
+모집인원`
+조회수`
+메시지 횟수`
+제목`
+내용`
+ */

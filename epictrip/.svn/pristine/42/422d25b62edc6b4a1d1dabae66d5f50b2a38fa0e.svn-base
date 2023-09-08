@@ -1,0 +1,21 @@
+package com.web.epictrip.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.web.epictrip.dao.Schedule_dao;
+import com.web.epictrip.vo.Schedule_Place_dt;
+
+@Service
+public class Schedule_service {
+
+	@Autowired
+	private Schedule_dao dao;
+	
+	public List<Schedule_Place_dt> schedule_Dt(@RequestParam("schedule_key") String schedule_key){
+		return dao.schedule_Dt(schedule_key);
+	}
+}

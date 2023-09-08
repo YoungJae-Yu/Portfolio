@@ -1,0 +1,231 @@
+	<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8" import="java.util.*"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+	<c:set var="path" value="${pageContext.request.contextPath }" />
+	<fmt:requestEncoding value="utf-8" />
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Final project : EpicTrip">
+    <meta property="og:url" content="https://mrrobotcorp.github.io/project6_EpicTrip/">
+    <meta property="og:image" content="https://mrrobotcorp.github.io/project6_EpicTrip//source/thumbnail.png">
+    <meta property="og:description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Final project : EpicTrip">
+    <meta name="twitter:url" content="https://mrrobotcorp.github.io/project6_EpicTrip/">
+    <meta name="twitter:image" content="https://mrrobotcorp.github.io/project6_EpicTrip//source/thumbnail.png">
+    <meta name="twitter:description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name="description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name='keywords' content='project, EpicTrip, toy project, community, trip, tour'>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios@0.21.4/dist/axios.min.js"></script>
+	
+    <link rel="icon" href="./source/favicon-32x32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="./source/apple-icon-180x180.png" sizes="180x180">
+    <title>EpicTrip | 에픽트립</title>
+
+    <link href="./css/headFoot.css" rel="stylesheet">
+    <link href="./css/cGroup.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="./main"><img class="headLogo" src="./source/logo.png"></a>
+            <div class="gnb">
+                <ul class="gnbTab">
+                    <li>
+                        <a href="#" class="store">여행상점</a>
+                    </li>
+                    <li>
+                        <a href="#" class="community">커뮤니티</a>
+                    </li>
+                </ul>
+                <div class="userHead">
+                    <a href="#"><img class="msgImg" src="./source/msg.png"></a>
+                    <a href="#"><img class="userImg" src="./source/profImg1.jpg"></a>
+                    <ul class="userList">
+                        <li>${loginUser.name}</li>
+                        <li>마이페이지</li>
+                        <li>로그아웃</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <div class="gnbBottom">
+            <a href="#" class="together">
+                <img src="./source/group.png">
+                <span>동행</span>
+            </a>
+            <a href="#" class="sche">
+                <img src="./source/date.png">
+                <span>일정</span>
+            </a>
+        </div>
+    </header>
+
+    <section class="cSchSection"  id="contents">
+        <div class="frmLine">
+            <div>
+				<form class="schFrm" @submit.prevent="search">
+				    <input type="text" v-model="cptitle" placeholder="여행지를 검색해보세요" @keyup.enter="search">
+				    <button type="button" @click="search"></button>
+				</form>
+				<button 
+				    type="button" 
+				    class="sortBtn" 
+				    :class="{ 'active': activeOrder === 'hits' }" 
+				    @click="changeOrderType('hits')">조회순
+				</button>
+            </div>
+            <a href="/Community_WriteGrp" class="postBtn">작성하기</a>
+            
+        </div>
+
+        <div class="schAll">
+        
+			<a href="/Community_GroDetail" class="goDetail" v-for="company in companies" :key="company.cpkey">
+                <div class="schOne">
+                    <div class="schTopInfo">
+                        <div class="schUser">
+                            <img :src="'./source/' + company.image + '.jpg'">
+                            <div>
+                                <p class="schNicK">{{ company.name }}</p>
+								<p class="subTxt">{{ getAge(company.birth) }}대 • {{ company.gender }}</p>
+                            </div>
+                        </div>
+                        <div class="schDays">
+                            <p>여행기간&nbsp;&nbsp;<span class="days">{{ getTravelDays(company.startdate, company.enddate) }}일</span></p>
+							<p class="subTxt">
+							    {{ formatDate(company.startdate) }} ~ {{ formatDate(company.enddate) }}
+							</p>
+                        </div>
+                    </div>
+    
+                    <div class="post post01">
+    
+                        <span class="postLoc" id="postLoc">{{ company.cploc }}</span>
+                        <div class="postImg">
+                             <img :src="'./source/' + company.cpimage">
+                            <div class="hiddenBox">
+                                <p id="pCnt">{{ isRecruitmentEnded(company.enddate) ? '모집종료' : '모집중' }} | {{ company.cpnum }}명</p>
+                                <div class="viewInner">
+                                    <span class="viewCnt">{{ company.hits }}</span>
+                                    <span class="chatCnt">{{ company.currentnum }}</span>
+                                </div>
+                            </div>
+                        </div>
+    
+                    </div>
+    
+                    <div class="postBottom">
+                        <h3 id="truncated">{{ company.cptitle }}</h3>
+                        <p id="turncatedP">
+							{{ company.cpcontent }}
+                        </p>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+		<div class="pagination">
+           <button type="button" class="prevBtn arrow"></button>
+           <button type="button" value="" class="pageNum active">1</button>
+           <button type="button" value="" class="pageNum">2</button>
+           <button type="button" value="" class="pageNum">3</button>
+           <button type="button" value="" class="pageNum">4</button>
+           <button type="button" value="" class="pageNum">5</button>
+           <button type="button" class="nextBtn arrow"></button>
+       </div>
+
+    </section>
+
+    <footer>
+        <img src="./source/logo_white.png">
+        <p><a href="mailto:depo89055@gmail.com">프로젝트 문의 dddd@gmail.com</a></p>
+        <p>유선 상담 010-1234-1234</p>
+        <p>Copyright© EpicTrip, Inc. 2023. All Rights Reserved.</p>
+    </footer>
+
+
+    <script src="./js/header.js"></script>
+	<script type="text/javascript">
+		new Vue({
+			el: '#contents', // Vue가 관리할 DOM 요소의 id
+		    data: {
+		        companies: [], // 서버에서 가져올 데이터를 저장할 배열
+		        cptitle: '',  // 검색어 저장
+		        orderType: '',  // 조회순 저장
+		       	activeOrder: null  // 활성화된 필터 표시
+		    },
+		    created() {
+		        this.fetchData(); // 초기 로딩 시 데이터 로드
+		    },
+		    methods: {// 나이를 20대, 30대의 형태로 구하는 메서드
+		    	fetchData() {
+		            axios.get('/companies', {
+		                params: {
+		                    cptitle: this.cptitle,
+		                    orderType: this.orderType
+		                }
+		            })
+		            .then(response => {
+		                this.companies = response.data;
+		            });
+		        },
+		        search(event) { 
+		            if (event) {  // 이벤트 객체가 있을 경우 
+		                event.preventDefault();  // 기본 폼 제출 동작을 중지
+		            }
+		            this.fetchData();
+		        },
+		        changeOrderType(order) {  // 조회순 변경 시 호출될 메서드
+		            if (this.activeOrder === order) {
+		                this.activeOrder = null;
+		                this.orderType = '';
+		            } else {
+		                this.activeOrder = order;
+		                this.orderType = order;
+		            }
+		            this.fetchData();
+		        },
+		    	getAge(birthDateString) {
+		            const today = new Date();
+		            const birthDate = new Date(birthDateString);
+		            let age = today.getFullYear() - birthDate.getFullYear();
+		            const monthDifference = today.getMonth() - birthDate.getMonth();
+		            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+		                age--;
+		            }
+		            return Math.floor(age / 10) * 10; // 1의 자리를 내림
+		    	},
+		        getTravelDays(startDateString, endDateString) {
+		            const startDate = new Date(startDateString);
+		            const endDate = new Date(endDateString);
+		            const oneDay = 24 * 60 * 60 * 1000; // 하루는 24시간, 1시간은 60분, 1분은 60초, 1초는 1000밀리초
+		            const diffDays = Math.round(Math.abs((startDate - endDate) / oneDay));
+		            return diffDays;
+		        },
+		        formatDate(dateTimeString) {
+		            const date = new Date(dateTimeString);
+		            const month = String(date.getMonth() + 1).padStart(2, '0');
+		            const day = String(date.getDate()).padStart(2, '0');
+		            return month + '-' + day;
+		        },
+		        isRecruitmentEnded(endDateString) {
+		            const endDate = new Date(endDateString);
+		            const today = new Date();
+		            today.setHours(0, 0, 0, 0);  // 오늘 날짜의 시간, 분, 초, 밀리초를 0으로 설정
+		            return endDate < today;
+		        }
+		    }
+		});
+	</script>
+</body>
+
+</html>

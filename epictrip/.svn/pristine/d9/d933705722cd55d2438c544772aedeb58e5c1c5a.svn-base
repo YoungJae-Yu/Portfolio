@@ -1,0 +1,97 @@
+package com.web.epictrip.vo;
+// com.web.epictrip.vo.Level_Vo
+import java.util.Date;
+
+public class Level_Vo {
+
+	private String levels_key ;
+	private String userid ;
+	private String recommendid ;
+	private Date recommenddate ;
+	private int cnt ;
+	private String imgName;
+	private int checklev ;
+	
+
+	public Level_Vo() {
+		super();
+	}
+	public Level_Vo(String levels_key, String userid, String recommendid, Date recommenddate) {
+		super();
+		this.levels_key = levels_key;
+		this.userid = userid;
+		this.recommendid = recommendid;
+		this.recommenddate = recommenddate;
+	}
+	public String getLevels_key() {
+		return levels_key;
+	}
+	public void setLevels_key(String levels_key) {
+		this.levels_key = levels_key;
+	}
+	public String getUserid() {
+		return userid;
+	}
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+	public String getRecommendid() {
+		return recommendid;
+	}
+	public void setRecommendid(String recommendid) {
+		this.recommendid = recommendid;
+	}
+	public Date getRecommenddate() {
+		return recommenddate;
+	}
+	public void setRecommenddate(Date recommenddate) {
+		this.recommenddate = recommenddate;
+	}
+	public int getCnt() {
+		return cnt;
+	}
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
+	}
+	
+	public String getImgName() {
+		return imgName;
+	}
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
+	}
+	public void CountLevel(int cnt) {
+		
+		if (cnt < 20) {
+			this.imgName = "Lv_0.png";
+		}else if (cnt >= 20 && cnt < 50) {
+			this.imgName = "Lv_1.png";
+		}else if (cnt >= 50 && cnt < 80) {
+			this.imgName = "Lv_2.png";
+		}else if (cnt >= 80 && cnt < 100) {
+			this.imgName = "Lv_3.png";
+		}else if (cnt >= 100 && cnt < 130) {
+			this.imgName = "Lv_4.png";
+		}else if (cnt >= 130 && cnt < 150) {
+			this.imgName = "Lv_5.png";
+		}else if (cnt >= 150 && cnt < 200) {
+			this.imgName = "Lv_6.png";
+		}else if (cnt >= 200 && cnt < 250) {
+			this.imgName = "Lv_7.png";
+		}else if (cnt >= 250 && cnt < 300) {
+			this.imgName = "Lv_8.png";
+		}else if (cnt >= 300) {
+			this.imgName = "Lv_9.png";
+		}
+			
+	}
+	public int getChecklev() {
+		return checklev;
+	}
+	public void setChecklev(int checklev) {
+		this.checklev = checklev;
+	}
+	
+	
+	
+}

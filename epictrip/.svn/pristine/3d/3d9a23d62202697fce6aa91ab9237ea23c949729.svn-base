@@ -1,0 +1,111 @@
+package com.web.epictrip.controller;
+
+
+import java.util.Date;
+import java.util.List;
+
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.web.epictrip.service.Schedule_service;
+import com.web.epictrip.vo.Place;
+import com.web.epictrip.vo.Schedule_insert01;
+import com.web.epictrip.vo.Schedule_insert02;
+
+@Controller
+public class Schedule_controller {
+
+	@Autowired
+	private Schedule_service service; 
+	
+    @Autowired
+    private SqlSessionFactory sqlSessionFactory;
+
+	// 상세화면
+	@GetMapping("schedule_detail")
+	public String showDetailPage(@RequestParam("schedule_key") String scheduleKey, Model model) {
+		// 조회수 up
+		service.scheduleUpHits(scheduleKey);
+	    // 모델에 데이터 추가
+	    model.addAttribute("scheduleDetails", service.schedule_Dt(scheduleKey));
+	    model.addAttribute("scheduleIns", service.schedule_Dt02(scheduleKey));
+	    
+	    return "CommunityDetail";
+	}
+
+	// 전체화면
+	@GetMapping("schedule_main")
+	public String showMainPage() {
+		
+		return "Community_Schedule_main";
+	}
+	
+	
+	
+	
+	// 작성 페이지
+	@GetMapping("Community_WriteSch")
+	public String showSchPage() {
+		
+		return "Community_WriteSch";
+	}
+	
+	
+	// 작성페이지 관광지 서치
+	@GetMapping("placeInfo")
+	@ResponseBody
+	public List<Place> placeInfo(@RequestParam("loc") String loc, @RequestParam("name") String name){
+		return service.placeInfo(loc,name);
+	}
+	
+	// 스케쥴 인서트 메서드
+	// Community_Insert?userid=heoyoun38&loc=%EC%9D%BC%EB%B3%B8&startdate=2023-08-17&enddate=2023-08-18&place_key=pl6&daynum=1
+	@GetMapping("Community_Insert")
+	@ResponseBody
+	public String insertSch(
+	        @RequestParam("startdateS") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startdate,
+	        @RequestParam("enddateS") @DateTimeFormat(pattern = "yyyy-MM-dd") Date enddate,
+	        Schedule_insert01 ins01, List<Schedule_insert02> ins02List) {
+	    String msg = "작성 실패";
+	    SqlSession sqlSession = null;
+
+	    try {
+	        sqlSession = sqlSessionFactory.openSession();
+
+	        ins01.setStartdate(startdate);
+	        ins01.setEnddate(enddate);
+	        sqlSession.insert("scheduleIns01", ins01);
+
+	        String generatedKey = ins01.getSchedule_key();
+
+	        for (Schedule_insert02 ins02 : ins02List) {
+	            ins02.setSchedule_key(generatedKey);
+	            sqlSession.insert("scheduleIns02", ins02);
+	        }
+
+	        sqlSession.commit();
+	        msg = "작성이 완료되었습니다.";
+	    } catch (Exception e) {
+	        if (sqlSession != null) {
+	            sqlSession.rollback();
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        if (sqlSession != null) {
+	            sqlSession.close();
+	        }
+	    }
+
+	    return msg;
+	}
+
+
+
+}

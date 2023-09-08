@@ -1,0 +1,25 @@
+# 톰캣 port
+server.port = 4040
+# DB설정
+spring.datasource.url=jdbc:oracle:thin:@192.168.10.120:1521:xe
+spring.datasource.username=ysm
+spring.datasource.password=0000
+spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
+# mybatis
+mybatis.mapper-locations=classpath:mybatis/mapper/**.xml
+mybatis.config-location=classpath:mybatis/mybatis.Spring.xml
+
+# view 기본 폴드
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+# 파일업로드 경로 이거 수정 해야됨
+upload=C:/a03_epictrip/workspace/epictrip/src/main/webapp/z01_upload/
+
+#logging.level.root=debug
+spring.devtools.livereload.enabled=true
+spring.devtools.restart.enabled=false
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.Oracle12cDialect

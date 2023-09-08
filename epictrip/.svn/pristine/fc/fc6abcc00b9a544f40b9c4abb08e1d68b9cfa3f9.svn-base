@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Final project : EpicTrip">
+    <meta property="og:url" content="https://mrrobotcorp.github.io/project6_EpicTrip/">
+    <meta property="og:image" content="https://mrrobotcorp.github.io/project6_EpicTrip//source/thumbnail.png">
+    <meta property="og:description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Final project : EpicTrip">
+    <meta name="twitter:url" content="https://mrrobotcorp.github.io/project6_EpicTrip/">
+    <meta name="twitter:image" content="https://mrrobotcorp.github.io/project6_EpicTrip//source/thumbnail.png">
+    <meta name="twitter:description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name="description" content="4조 프로젝트 사이트 - EpicTrip">
+    <meta name='keywords' content='project, EpicTrip, toy project, community, trip, tour'>
+
+    <link rel="icon" href="./source/favicon-32x32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="./source/apple-icon-180x180.png" sizes="180x180">
+    <title>EpicTrip | 에픽트립</title>
+
+    <link href="./css/headFoot.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/join.css">
+
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="./main.html"><img class="headLogo" src="./source/logo.png"></a>
+            <div class="gnb">
+                <ul class="gnbTab">
+                    <li>
+                        <a href="#">여행상점</a>
+                    </li>
+                    <li>
+                        <a href="#">커뮤니티</a>
+                    </li>
+                </ul>
+                <div class="account">
+                    <a href="./login.html">로그인</a>
+                    <a href="./join.html">회원가입</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="logJoinWrap">
+        <form action="" class="joinInner">
+            <h1>회원가입</h1>
+            <p>입력사항 (필수)</p>
+            <div class="joinInput">
+                <input type="text" value="" id="id" name="id" placeholder="아이디 입력"
+                onfocus="this.placeholder=''" onblur="this.placeholder='아이디 입력'" maxlength="16">
+                <p id="idCheck" class="msg errMsg">사용 가능한 아이디입니다.</p>
+                <input type="password" value="" id="pwd" name="pwd" placeholder="비밀번호(8자~12자, 영문+숫자+특수문자 사용)"
+                onfocus="this.placeholder=''" onblur="this.placeholder='비밀번호(8자~12자, 영문+숫자+특수문자 사용)'" maxlength="12">
+                <p id="pwdCheck" class="msg errMsg">사용 가능한 아이디입니다.</p>
+                <input type="password" value="" id="pwdCk" name="pwdCk" placeholder="비밀번호 재입력"
+                onfocus="this.placeholder=''" onblur="this.placeholder='비밀번호 재입력'" maxlength="12">
+                <p id="pwddbCheck" class="msg errMsg">사용 가능한 아이디입니다.</p>
+                <input type="text" name="" id="name" name="name" placeholder="이름"
+                onfocus="this.placeholder=''" onblur="this.placeholder='이름'">
+                <input type="text" name="email" id="email" placeholder="이메일"
+                onfocus="this.placeholder=''" onblur="this.placeholder='이메일'">
+                <p id="emailCheck" class="msg errMsg">사용 가능한 아이디입니다.</p>
+                <div class="phone">
+                    <input type="number" name="phoneNum" id="phoneNum" placeholder="휴대폰 번호 (-없이 입력해주세요)"
+                    onfocus="this.placeholder=''" onblur="this.placeholder='휴대폰 번호 (-없이 입력해주세요)'">
+                    <input type="button" class="phoneNumCk" value="인증번호 발송" onclick="codeCk()">
+                    <!-- onclick="codeCk()" : 인증코드 인풋창 나오게 하는 함수 -->
+                </div>
+                <div class="phone codeCk">
+                    <div class="codeWrap">
+                        <div class="codeInner">
+                            <input type="number" name="code" id="code" placeholder="인증번호"
+                            onfocus="this.placeholder=''" onblur="this.placeholder='인증번호'">
+                            <input type="button" class="phoneNumCk" value="인증번호 확인" onclick="checkMsg()">
+                        </div>
+                        <p id="codeCheck" class="msg errMsg"></p>
+                    </div>
+
+                </div>
+                <details class="custom-select">
+                    <summary class="radios first">
+                        <input type="radio" name="item" id="default" title="성별" checked>
+                        <input type="radio" name="item" id="item1" title="여자">
+                        <input type="radio" name="item" id="item2" title="남자">
+                    </summary>
+                    <ul class="list">
+                        <li><label for="default">성별</label></li>
+                        <li> <label for="item1"> 여자</label></li>
+                        <li><label for="item2">남자</label></li>
+                    </ul>
+                </details>
+                <input type="date" name="birth" id="birth">
+                <div class="agreeForm">
+                    <div class="allAgree">
+                        <input type="checkbox" name="check_all" class="ckAgree" id="allAgree"> 
+                       <label for="allAgree"></label>
+                       <p>이용약관 전체 동의</p>
+                    </div>
+                    <div class="agree">
+                        <input type="checkbox" name="agree"class="ckAgree" id="fAgree">
+                        <label for="fAgree"></label>
+                        <p>(필수) 서비스 이용약관 동의</p>
+
+                    </div>
+                    <div class="agree">
+                        <input type="checkbox" name="agree" class="ckAgree" id="sAgree">
+                        <label for="sAgree"></label>
+                        <p>(필수) 개인정보처리방침 동의</p>
+
+                    </div>
+                    <div class="agree">
+                        <input type="checkbox" name="agree" class="ckAgree" id="tAgree">
+                        <label for="tAgree"></label>
+                        <p>(필수) 위치기반서비스 동의</p>
+
+                    </div>
+                    <div class="agree">
+                        <input type="checkbox" name="agree" class="ckAgree" id="foAgree">
+                        <label for="foAgree"></label>
+                        <p>(선택) 마케팅 정보 활용 동의</p>
+
+                    </div>
+                    <div class="agree">
+                        <input type="checkbox" name="agree" class="ckAgree" id="fiAgree">
+                        <label for="fiAgree"></label>
+                        <p>(필수) 만 14세 이상입니다</p>
+
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="회원가입" class="joinBtn">
+            <div class="modalWrap">
+                <div class="modalInner">
+                    <div class="errModal">
+                        <p>휴대폰 번호를 올바르게 입력해주세요.</p>
+                        <button class="errModalBtn" onclick="msgCk()">확인</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+</body>
+<footer>
+    <img src="./source/logo_white.png">
+    <a href="mailto:depo89055@gmail.com">프로젝트 문의 dddd@gmail.com</a>
+    <p>유선 상담 010-1234-1234</p>
+    <p>Copyright© EpicTrip, Inc. 2023. All Rights Reserved.</p>
+</footer>
+
+
+<script src="./js/header.js"></script>
+<script src="./js/logJoin.js"></script>
+<script src = "https://code.jquery.com/jquery-3.7.0.js" type="text/javascript"></script>
+<script type="text/javascript"></script>
+</html>

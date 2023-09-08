@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >	
+<mapper namespace="com.web.epictrip.dao.Store_Dao">
+
+	<!-- 상품 등록 -->
+	<insert id="Store_Prod_Insert" parameterType="product">
+	    INSERT INTO product (prodkey, prodloc, dcday, dcprice, price, prodtitle, prodcontent, titleimage, detailimage, hits, startdate, enddate, updtdate, creatdate, writer,country)
+	    VALUES ('prod_' || prod_seq.nextval, #{prodloc}, #{dcday}, #{dcprice}, #{price}, #{prodtitle}, #{prodcontent}, #{titleimage}, #{detailimage}, 0, #{startdate}, #{enddate}, sysdate, sysdate,#{writer},#{country})
+	</insert>
+
+
+	<!-- 상품 리스트 페이징처리 -->
+	<select id="Store_Prod_Main_Cnt" resultType="int" parameterType="product_page">
+    	select count(*)
+    	from product
+    	where 1=1
+    	and country = #{country}
+        <choose>			        
+	       	<!-- keyword에 ""이 아닐 때 (타이틀 검색) -->
+	        <when test="keyword neq ''"> 
+		        and prodtitle like '%'|| lower(#{keyword}) ||'%'
+	   			order by updtdate desc
+	        </when>
+	       	<!-- searchType와 keyword가 공백이 아닐때 (타이틀검색 + 조회순) -->
+	        <when test="searchType neq '' and keyword neq ''">
+	        	and prodtitle like '%'|| lower(#{keyword}) ||'%'
+		        order by hits desc
+	        </when>
+	       	<!-- searchType가 공백이 아닐때 (조회순) -->
+	        <when test="searchType neq ''">
+		        order by hits desc
+	        </when>
+	       	<!-- 모두해당하지 않을때 업데이트 순 -->
+	           	<otherwise>
+	     		order by updtdate desc
+	    	</otherwise>
+    	</choose>
+	</select>
+	
+	<!-- 상품 리스트 페이징처리 후 출력 -->
+	<select id="Store_Prod_Main_List" resultType="product_list" parameterType="product_page">
+		select *
+		from(
+		    select rownum as rnum, 
+			prodkey, prodloc, country, price, prodtitle, titleimage, hits, updtdate
+		    from
+		    (
+		        select *
+		        from product
+		        where 1=1
+		        and country = #{country}
+			        <choose>			        
+			        	<!-- keyword에 ""이 아닐 때 (타이틀 검색) -->
+				        <when test="keyword neq ''"> 
+					        and prodtitle like '%'|| lower(#{keyword}) ||'%'
+			    			order by updtdate desc
+				        </when>
+			        	<!-- searchType와 keyword가 공백이 아닐때 (타이틀검색 + 조회순) -->
+				        <when test="searchType neq '' and keyword neq ''">
+				        	and prodtitle like '%'|| lower(#{keyword}) ||'%'
+					        order by hits desc
+				        </when>
+			        	<!-- searchType가 공백이 아닐때 (조회순) -->
+				        <when test="searchType neq ''">
+					        order by hits desc
+				        </when>
+			        	<!-- 모두해당하지 않을때 업데이트 순 -->
+		             	<otherwise>
+				     		order by updtdate desc
+				    	</otherwise>
+			        </choose>
+			    ) t
+			    where rownum <![CDATA[<=]]> #{startList} + #{sizePerPage}
+			)
+		where rnum <![CDATA[>=]]> #{startList}
+	</select>
+
+	<!-- 상품메인 상품갯수 출력 -->
+	<select id="store_Main_Num" resultType="int" parameterType="string">
+	    SELECT COUNT(*) AS count
+	    FROM product
+	    WHERE country = #{value}
+	</select>
+
+
+
+</mapper>

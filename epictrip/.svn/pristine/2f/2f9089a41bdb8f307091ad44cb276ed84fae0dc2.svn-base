@@ -1,0 +1,158 @@
+// JavaScript 코드 예시
+const memChatButton = document.getElementById('memChat');
+const adminChatButton = document.getElementById('adminChat');
+
+// URL에서 현재 페이지의 파일명을 추출하는 함수
+function getCurrentPageFileName() {
+  const urlParts = window.location.href.split('/');
+  return urlParts[urlParts.length - 1];
+}
+
+const currentPageFileName = getCurrentPageFileName();
+
+if (currentPageFileName === 'message') {
+  memChatButton.classList.add('selected');
+}
+
+if (currentPageFileName === 'message_userAdChat') {
+  adminChatButton.classList.add('selected');
+}
+
+const messageTextarea = document.getElementById('messageTextarea');
+const sendButton = document.getElementById('sendButton');
+
+messageTextarea.addEventListener('input', function() {
+    if (messageTextarea.value.trim() !== '') {
+        sendButton.classList.add('send');
+    } else {
+        sendButton.classList.remove('send');
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+  var roomTitles = document.querySelectorAll(".roomtitle p");
+
+  roomTitles.forEach(function(roomTitle) {
+      if (roomTitle.textContent.length > 18) {
+          var originalText = roomTitle.textContent;
+          roomTitle.textContent = originalText.slice(0, 18) + "···";
+      }
+  });
+});
+
+// 말 줄임...
+document.addEventListener("DOMContentLoaded", function() {
+  var chatroomName = document.querySelectorAll(".chatroomname p");
+
+  chatroomName.forEach(function(chatroomName) {
+      if (chatroomName.textContent.length > 50) {
+          var originalText = chatroomName.textContent;
+          chatroomName.textContent = originalText.slice(0, 50) + "···";
+      }
+  });
+});
+
+// 동행 확정, 취소 토글 버튼
+const groupToggleButtons = document.querySelectorAll('.groupToggle');
+const grouponTexts = document.querySelectorAll('.groupon');
+
+groupToggleButtons.forEach((button, index) => {
+  button.addEventListener('click', () => {
+    if (button.classList.contains('cancel')) {
+      button.textContent = '확정';
+      button.classList.remove('cancel');
+      grouponTexts[index].innerText = '';
+    } else {
+      button.textContent = '취소';
+      button.classList.add('cancel');
+      grouponTexts[index].innerText = '동행 확정';
+    }
+  });
+});
+
+// 동행 확정 모달 열기, 닫기
+function openSelm(){
+  var selmModal = document.querySelector(".selmModal");
+  selmModal.style.display = "block";
+}
+
+function closeSelm(){
+  var selmModal = document.querySelector(".selmModal");
+  selmModal.style.display = "none";
+}
+
+// =============== 모달 js ==================
+// ms모달 열기,닫기
+function memMpclose(){
+  var memMpModal = document.querySelector(".memMpModal");
+  memMpModal.style.display = "none";
+}
+function memMpopen(){
+  var memMpModal = document.querySelector(".memMpModal");
+  memMpModal.style.display = "flex";
+}
+// 
+// .goodMem 버튼 클릭 시 토글 동작
+function recogood() {
+  var goodButton = document.querySelector('.goodMem');
+  goodButton.classList.toggle('choice');
+}
+
+// .badMem 버튼 클릭 시 토글 동작
+function recobad() {
+  var badButton = document.querySelector('.badMem');
+  badButton.classList.toggle('choiceB');
+}
+
+
+
+
+// 채팅 기능
+let socket = new SockJS('/ws');
+let stompClient = Stomp.over(socket);
+
+stompClient.connect({}, function(frame) {
+    console.log('Connected: ' + frame);
+
+    stompClient.subscribe('/topic/messages', function(message) {
+        // 메시지 수신 처리 로직
+        let receivedMessage = JSON.parse(message.body);
+        console.log(receivedMessage);
+        displayMessage(receivedMessage.content);
+    });
+});
+function sendMessage() {
+    let messageInput = document.getElementById('messageTextarea');
+    let message = messageInput.value;
+    if (message.trim() !== '') {
+		stompClient.send("/app/send", {}, JSON.stringify({ content: message }));
+        messageInput.value = '';  // 입력 필드 초기화
+    }
+}
+
+/*
+function sendMessage() {
+    let messageInput = document.getElementById('messageTextarea');
+    let message = messageInput.value;
+    if (message.trim() !== '') {
+        // AJAX를 사용하여 서버에 메시지 전송
+        fetch('/sendChatMessage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ content: message })
+        }).then(response => {
+            if (response.ok) {
+                // 메시지 전송 성공
+                displayMessage(message); // 추가된 부분
+                messageInput.value = '';  // 입력 필드 초기화
+            }
+        });
+    }
+}
+*/
+function displayMessage(message) {
+    let messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML += '<span>' + message + '</span>';
+}

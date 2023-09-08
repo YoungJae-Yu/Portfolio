@@ -1,0 +1,48 @@
+package com.web.epictrip.controller;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@RestController
+@RequestMapping("/changeLanguage")
+public class LanguagePayController {
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @GetMapping
+    public ResponseEntity<Map<String, String>> changeLanguage(@RequestParam String lang, HttpServletRequest request) {
+        Locale locale = new Locale(lang);
+        Map<String, String> messages = new HashMap<>();
+        messages.put("reserve", messageSource.getMessage("reserve", null, locale));
+        messages.put("reserve_info", messageSource.getMessage("reserve_info", null, locale));
+        messages.put("reserve_name", messageSource.getMessage("reserve_name", null, locale));
+        messages.put("reserve_gender", messageSource.getMessage("reserve_gender", null, locale));
+        messages.put("reserve_birth", messageSource.getMessage("reserve_birth", null, locale));
+        messages.put("reserve_phone", messageSource.getMessage("reserve_phone", null, locale));
+        messages.put("reserve_email", messageSource.getMessage("reserve_email", null, locale));
+        messages.put("payment", messageSource.getMessage("payment", null, locale));
+        messages.put("please_check", messageSource.getMessage("please_check", null, locale));
+        messages.put("selected_product", messageSource.getMessage("selected_product", null, locale));
+        messages.put("total_payment", messageSource.getMessage("total_payment", null, locale));
+        messages.put("use_point", messageSource.getMessage("use_point", null, locale));
+        messages.put("total_price", messageSource.getMessage("total_price", null, locale));
+        messages.put("accumulate", messageSource.getMessage("accumulate", null, locale));
+        messages.put("payment_method", messageSource.getMessage("payment_method", null, locale));
+        messages.put("card_payment", messageSource.getMessage("card_payment", null, locale));
+        messages.put("nobank_payment", messageSource.getMessage("nobank_payment", null, locale));
+
+        return ResponseEntity.ok(messages);
+    }
+}

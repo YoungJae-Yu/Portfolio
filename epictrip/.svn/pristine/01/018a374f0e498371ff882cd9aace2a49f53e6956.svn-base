@@ -1,0 +1,115 @@
+// ----------- 날짜 선택 -----------------
+$(function () {
+    $(".datePick").datepicker({
+        dateFormat: 'yy-mm-dd',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년'
+    });
+});
+/*
+// ---------------  모집인원 ------------------------
+function ShowSliderValue(sVal) {
+    var obValueView = document.querySelector(".rangeValue");
+    obValueView.innerHTML = sVal
+}
+
+var RangeSlider = function () {
+    var range = $('.teamNum');
+
+    range.on('input', function () {
+        ShowSliderValue(this.value);
+    });
+};
+
+RangeSlider();
+*/
+new Vue({
+    el: '.teamSelec',  // 해당 Vue 인스턴스가 동작할 DOM 요소의 셀렉터
+    data: {
+        sliderValue: 0  // 슬라이더의 초기 값
+    },
+    methods: {
+        updateSliderValue(event) {
+            this.sliderValue = event.target.value;
+        }
+    }
+});
+
+
+// ------------- 업로드 이미지 노출 ----------------
+window.onload = function() {
+
+    const fileInput = document.querySelector('#fileInput');
+    const fileDisplayArea = document.querySelector('.imgArea');
+    const uploadedBtn = document.querySelector('.uploadedBtn');
+
+
+    fileInput.addEventListener('change', function(e) {
+        var file = fileInput.files[0];
+        var imageType = /image.*/;
+
+        if (file.type.match(imageType)) {
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                fileDisplayArea.innerHTML = "";
+
+                var img = new Image();
+                img.src = reader.result;
+
+                fileDisplayArea.appendChild(img);
+            }
+
+            reader.readAsDataURL(file);	
+        } else {
+            fileDisplayArea.innerHTML = "<p class='wrongTxt'>&#128473; 잘못된 이미지 형식입니다 &#128473;</p>"
+        }
+
+        uploadedBtn.classList.add("uploaded");
+    });
+
+}
+// 동행 작성 로직
+new Vue({
+    el: '.cWriteSection',
+    data: {
+        company: {
+            userid: null,
+            cpimage: null,
+            cptitle: null,
+            cpcontent: null,
+            cploc: null,
+            cpnum: 0, 
+            startdate: null,
+            enddate: null
+        }
+    },
+    mounted() {
+        this.company.userid = document.getElementById('sessionUserId').value;
+    },
+    methods: {
+        submitCompany() {
+            let formData = new FormData();
+            for(let key in this.company) {
+                formData.append(key, this.company[key]);
+            }
+            formData.append('imgFile', this.$refs.fileInput.files[0]);
+    
+            axios.post('/insertCompany', formData)
+                .then(response => {
+                    window.location.href = '/Community_Group';
+                })
+                .catch(error => {
+                    console.error('Error posting the company data', error);
+                    alert('글 작성 중 문제가 발생했습니다. 다시 시도해주세요.'); // 사용자에게 알림
+                });
+        }
+    }
+});
+
+

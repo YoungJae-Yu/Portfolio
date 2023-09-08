@@ -1,0 +1,13 @@
+package com.web.epictrip.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class Mypage_Controller {
+
+	@RequestMapping("Mypage_mymain")
+	public String Mypage_mymain_sel () {
+		return "Mypage_mymain";
+	}
+}

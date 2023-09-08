@@ -1,0 +1,73 @@
+package com.web.epictrip.controller;
+
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.web.epictrip.service.ChatService;
+import com.web.epictrip.vo.ChatMessage;
+import com.web.epictrip.vo.User;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class ChatController {
+
+    @Autowired
+    private ChatService chatService;
+    // 세션 처리
+    public User getLoginUser(HttpServletRequest request ) {
+        HttpSession session = request.getSession();
+        User userInfo = (User) session.getAttribute("userInfo");
+        return userInfo;
+    }
+    @GetMapping("/message")
+    public String message() {
+        return "message";
+    }
+    
+    @GetMapping("/message_userAdChat")
+    public String message_userAdChat() {
+        return "message_userAdChat";
+    }
+    //  chatService.saveMessage(chatMessage);
+
+    @MessageMapping("/send")
+    @SendTo("/topic/messages")
+    public ChatMessage sendMessage(ChatMessage chatMessage, Principal principal) {
+        // 현재 로그인한 유저의 이름
+        String currentUsername = principal.getName();
+        
+        // TODO: DB에서 해당 유저의 이름 및 이미지를 가져옵니다.
+        // 예시: User currentUser = userService.findByUsername(currentUsername);
+        // chatMessage.setSenderName(currentUser.getName());
+        // chatMessage.setSenderImage(currentUser.getImageUrl());
+
+        // 현재 시간을 "오후 9:05"와 같은 형식으로 설정
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("a h:mm");
+        String formattedTime = now.format(formatter);
+        chatMessage.setFormattedTimestamp(formattedTime);
+
+        return chatMessage;
+    }
+
+
+    @PostMapping("/sendChatMessage")
+    @ResponseBody
+    public ResponseEntity<Void> sendChatMessage(@RequestBody ChatMessage chatMessage) {
+        chatService.saveMessage(chatMessage);
+        return ResponseEntity.ok().build();
+    }
+}

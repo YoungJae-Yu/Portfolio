@@ -1,0 +1,29 @@
+package com.web.epictrip.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.web.epictrip.dao.Company_dao;
+import com.web.epictrip.vo.Company;
+
+@Service
+public class Company_service {
+
+    @Autowired
+    private Company_dao companyDao;
+    
+    public List<Company> getCompanyList(String cptitle, String orderType) {
+        Map<String, String> params = new HashMap<>();
+        params.put("cptitle", cptitle);
+        params.put("orderType", orderType);
+        return companyDao.cpList(params);
+    }
+    
+    public String insertCompany(Company company) {
+        return companyDao.insertCompany(company)>0?"작성성공":"작성실패";
+    }
+}

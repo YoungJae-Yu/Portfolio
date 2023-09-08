@@ -1,0 +1,5 @@
+package com.web.epictrip.dao;
+
+public class Company_dao {
+
+}

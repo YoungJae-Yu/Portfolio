@@ -1,0 +1,56 @@
+package com.web.epictrip.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.web.epictrip.service.ChatService;
+import com.web.epictrip.vo.ChatMessage;
+import com.web.epictrip.vo.User;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class ChatController {
+
+    @Autowired
+    private ChatService chatService;
+    // 세션 처리
+    public User getLoginUser(HttpServletRequest request ) {
+        HttpSession session = request.getSession();
+        User userInfo = (User) session.getAttribute("userInfo");
+        return userInfo;
+    }
+    @GetMapping("/message")
+    public String message() {
+        return "message";
+    }
+    
+    @GetMapping("/message_userAdChat")
+    public String message_userAdChat() {
+        return "message_userAdChat";
+    }
+    //  chatService.saveMessage(chatMessage);
+
+    @MessageMapping("/send")
+    @SendTo("/topic/messages")
+    public ChatMessage sendMessage(ChatMessage chatMessage) {
+        System.out.println(chatMessage.getContent());
+        return chatMessage;
+    }
+
+
+    @PostMapping("/sendChatMessage")
+    @ResponseBody
+    public ResponseEntity<Void> sendChatMessage(@RequestBody ChatMessage chatMessage) {
+        chatService.saveMessage(chatMessage);
+        return ResponseEntity.ok().build();
+    }
+}

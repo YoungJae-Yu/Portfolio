@@ -1,0 +1,14 @@
+package com.web.epictrip.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.web.epictrip.vo.Schedule_Place_dt;
+
+@Mapper
+public interface Schedule_dao {
+
+	public List<Schedule_Place_dt> schedule_Dt(@RequestParam("schedule_key") String schedule_key);
+}

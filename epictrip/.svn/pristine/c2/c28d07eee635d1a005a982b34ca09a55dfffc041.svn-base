@@ -1,0 +1,90 @@
+package com.web.epictrip.controller;
+
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.web.epictrip.repository.UserinfoRepository;
+import com.web.epictrip.service.ChatService;
+import com.web.epictrip.vo.ChatMessage;
+import com.web.epictrip.vo.ChatMessageDTO;
+import com.web.epictrip.vo.User;
+import com.web.epictrip.vo.Userinfo;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+public class ChatController {
+
+    @Autowired
+    private ChatService chatService;
+    
+    // 세션 처리
+    public User getLoginUser(HttpServletRequest request ) {
+        HttpSession session = request.getSession();
+        User userInfo = (User) session.getAttribute("userInfo");
+        return userInfo;
+    }
+    @GetMapping("/message")
+    public String message(HttpServletRequest request, Model model) {
+        User loginUser = getLoginUser(request);
+        model.addAttribute("loginUser", loginUser);
+        return "message";
+    }
+    
+    @GetMapping("/message_userAdChat")
+    public String message_userAdChat(HttpServletRequest request, Model model) {
+        User loginUser = getLoginUser(request);
+        model.addAttribute("loginUser", loginUser);
+        return "message_userAdChat";
+    }
+    //  chatService.saveMessage(chatMessage);
+
+    @Autowired
+    private UserinfoRepository userinfoRepository; // Userinfo의 Repository
+
+    @MessageMapping("/send")
+    @SendTo("/topic/messages")
+    public ChatMessage sendMessage(ChatMessageDTO chatMessageDTO) { // ChatMessageDTO는 JSON 데이터를 바인딩하기 위한 DTO
+        System.out.println(chatMessageDTO.getContent());
+
+        Userinfo sender = userinfoRepository.findById(chatMessageDTO.getSenderId()).orElse(null);
+        if (sender == null) {
+            throw new IllegalArgumentException("Sender with ID " + chatMessageDTO.getSenderId() + " not found");
+        }
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setContent(chatMessageDTO.getContent());
+        chatMessage.setSender(sender);
+        chatMessage.setTimestamp(LocalDateTime.now());
+        // sender의 정보를 ChatMessage 객체에 설정
+        chatMessage.setSenderId(sender.getUserid());
+        chatMessage.setSenderName(sender.getName());
+        chatMessage.setSenderImage(sender.getImage());
+        chatMessage.setSenderIntroduce(sender.getUserIntroduce());
+        chatMessage.setSenderBirth(sender.getBirth());
+        chatMessage.setSenderGender(sender.getGender());
+
+        return chatMessage;
+    }
+
+
+
+
+    @PostMapping("/sendChatMessage")
+    @ResponseBody
+    public ResponseEntity<Void> sendChatMessage(@RequestBody ChatMessage chatMessage) {
+        chatService.saveMessage(chatMessage);
+        return ResponseEntity.ok().build();
+    }
+}
