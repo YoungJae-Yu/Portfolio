@@ -18,7 +18,7 @@ Library : MimeMessage, Mail<br>
 Tool : Eclipse / ERD / DBeaver / SVN<br>
 Database : Oracle 11<br>
 Server : Apache Tomcat 9<br>
-API : SMS API, Google Map API, WebSocket API, OpenAI API, FullCalendar API <br>
+API : SMS API, Google Map API, WebSocket API, FullCalendar API <br>
 
 [주요기능]
 <br>
