@@ -33,7 +33,9 @@ API : SMS API, Google Map API, WebSocket API, FullCalendar API <br>
 
 [발표자료 원본]
 <br>
-https://drive.google.com/file/d/1kILTJHgwuRBcXnb6hOs63q3GTrYFs2J1/view?usp=drive_link
+https://drive.google.com/file/d/1kILTJHgwuRBcXnb6hOs63q3GTrYFs2J1/view?usp=drive_link (발표자료)
+https://drive.google.com/file/d/1zJZ7qfO23KEIUJn5KPHsDV6E1AytN0Oa/view?usp=drive_link (PPT발표 영상)
+https://drive.google.com/file/d/1YVD94Rh2JwTF2YyzDyGCgrp5v5WaVb3M/view?usp=drive_link (홈페이지 시연 연상)
 
 ---
 
