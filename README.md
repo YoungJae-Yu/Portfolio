@@ -31,7 +31,9 @@ API : SMS API, Google Map API, WebSocket API, FullCalendar API <br>
 마이페이지: 작성한 게시글과 댓글 및 후기를 조회할 수 있고, 계정정보 수정 기능 구현<br>
 관리자 페이지: 풀캘린더를 활용하여 매출을 관리 기능 구현<br>
 
-
+[발표자료 원본]
+<br>
+https://drive.google.com/file/d/1kILTJHgwuRBcXnb6hOs63q3GTrYFs2J1/view?usp=drive_link
 
 ---
 
@@ -63,6 +65,10 @@ API : SMS api <br>
 멤버십: 다양한 멤버십 플랜 및 구독 서비스 제공 <br>
 관리자 페이지: 전체 회원 및 콘텐츠 관리, 사용자 피드백 및 게시물 관리 <br>
 
+[발표자료 원본]
+<br>
+[https://drive.google.com/file/d/1kILTJHgwuRBcXnb6hOs63q3GTrYFs2J1/view?usp=drive_link](https://drive.google.com/file/d/176xnq6-PUL7accObB0ROJb3fUWa1SQRF/view?usp=drive_link)
+
 ---
 ### 3. [잔잔]
 [개요] 
@@ -88,3 +94,7 @@ Server : Apache Tomcat 10 <br>
 구독 서비스: 원하는 제품을 정기적으로 받을 수 있는 구독 서비스를 제공하여, 사용자의 편의성을 높입니다. <br>
 회원 관리: 사용자의 가입, 탈퇴, 정보 수정 등의 회원 관련 기능을 제공합니다. 또한, 사용자의 구독 상태, 주문 내역 등을 확인할 수 있습니다. <br>
 관리자 기능: 전체 사용자 관리, 제품의 추가/삭제/수정, 주문 상태 관리 등의 관리자 전용 기능을 통해 웹사이트의 효율적인 운영을 지원합니다. <br>
+
+[발표자료 원본]
+<br>
+[https://drive.google.com/file/d/1kILTJHgwuRBcXnb6hOs63q3GTrYFs2J1/view?usp=drive_link](https://drive.google.com/file/d/19nXjLxxyTwgjzTjhD3QCRgAelz_HmBIA/view?usp=drive_link)
